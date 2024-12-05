@@ -1,0 +1,206 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String  @id @default(cuid())
+  firstName      String  @map("first_name")
+  lastName       String  @map("last_name")
+  email          String  @unique
+  password       String
+  subscriptionId String? @unique @map("subscription_id")
+  imageUrl       String? @map("image_url")
+  imagePublicId  String? @map("image_public_id")
+  role           Role    @default(user)
+  title          String?
+  github         String?
+  website        String?
+  linkedin       String?
+
+  courses           Course[]
+  ratings           Rating[]
+  comments          Comment[]
+  lessonCompletions LessonCompletion[]
+  certificates      Certificate[]
+  favorites         Favorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// TODO: Añadir las categorias al panel de admin
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  courses Course[]
+
+  createdAt DateTime @default(now())
+
+  @@map("categories")
+}
+
+model Course {
+  id            String  @id @default(cuid())
+  title         String
+  imageUrl      String  @map("image_url")
+  imagePublicId String  @map("image_public_id")
+  level         Level
+  description   String
+  prerequisites String? @db.Text
+  duration      Float   @default(0)
+  averageRating Float   @default(0) @map("average_rating")
+  lessons       Int     @default(0)
+  isActive      Boolean @default(false) @map("is_active")
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  ratings      Rating[]
+  units        Unit[]
+  certificates Certificate[]
+  favorites    Favorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("courses")
+}
+
+model Rating {
+  id      String  @id @default(cuid())
+  rating  Float
+  comment String? @db.Text
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  courseId String @map("course_id")
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ratings")
+}
+
+model Unit {
+  id    String @id @default(cuid())
+  title String
+
+  courseId String @map("course_id")
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("units")
+}
+
+model Lesson {
+  id          String @id @default(cuid())
+  title       String
+  duration    Float
+  video       String
+  description String
+
+  unitId String @map("unit_id")
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  comments          Comment[]
+  lessonCompletions LessonCompletion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lessons")
+}
+
+model LessonCompletion {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lessonId])
+  @@map("lesson_completions")
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}
+
+model Certificate {
+  id            String   @id @default(cuid())
+  duration      Float
+  issuedAt      DateTime @default(now())
+  imageUrl      String   @map("image_url")
+  imagePublicId String   @map("image_public_id")
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("certificates")
+}
+
+model Favorite {
+  id String @id @default(cuid())
+
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+  @@map("favorites")
+}
+
+enum Level {
+  principiante
+  intermedio
+  avanzado
+}
+
+enum Role {
+  user
+  instructor
+  admin
+}
