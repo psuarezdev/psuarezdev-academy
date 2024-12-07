@@ -1,5 +1,7 @@
 # PSuarezDev Academy: Next.js 14, TypeScript, PostgreSQL, Prisma, Tailwind, Python, Stripe
 
+![Captura de pantalla 2024-11-24 112044](https://github.com/user-attachments/assets/bfcd3777-9c0e-4b35-8816-8356ced9bcf1)
+
 **PSuarezDev Academy is an innovative online learning platform designed to provide an accessible, intuitive and personalised educational experience. This project aims to facilitate both access to courses and the management of educational content, integrating a role-based system that allows administrators, instructors and students to interact effectively.
 With a modern interface and advanced functionalities, PSuarezDev Academy seeks to position itself as a practical and scalable solution for digital education in a dynamic and constantly evolving environment.**
 
