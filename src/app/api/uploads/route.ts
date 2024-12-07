@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         { message: 'Error al subir el archivos' },
         { status: 500 }
       );
-    }
+    }  
 
     const path = join(process.cwd(), 'src', 'uploads', dir, fileName);
 

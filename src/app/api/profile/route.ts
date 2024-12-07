@@ -3,7 +3,7 @@ import type { User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { getAuth } from '@/lib/auth';
 import { UploadPaths } from '@/lib/config';
-import { removeFile, uploadFile } from '@/lib/upload';
+import { remove } from '@/lib/cloudinary';
 
 export async function GET() {
   try {
@@ -39,22 +39,54 @@ export async function PATCH(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file');
 
-    let image: string | null =  null;
-    
-    if(file && file instanceof File) {
-      if(auth.image) await removeFile(UploadPaths.Avatars, auth.image);
-      image = (await uploadFile(UploadPaths.Avatars, file as File)) ?? auth.image;
+    let image: {
+      imageUrl?: string | null;
+      imagePublicId?: string | null;
+    } = {
+      imageUrl: undefined,
+      imagePublicId: undefined
+    };
+
+    if (file && file instanceof File) {
+      if (auth.imagePublicId) {
+        await remove(UploadPaths.Avatars, auth.imagePublicId);
+      }
+
+      const formData = new FormData();
+      formData.set('file', file);
+      formData.set('dir', UploadPaths.Avatars);
+
+      const res = await fetch(`${process.env.BASE_URL}/api/uploads`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${auth.accessToken}` },
+        body: formData
+      });
+
+
+      const fileData = await res.json();
+
+      if (fileData?.secureUrl && fileData?.publicId) {
+        image = {
+          imageUrl: fileData.secureUrl,
+          imagePublicId: fileData.publicId
+        };
+      } else {
+        image = {
+          imageUrl: auth.imageUrl,
+          imagePublicId: auth.imagePublicId
+        };
+      }
     }
 
-    const body: Partial<User> & { file?: File } = { image };
+    const body: Partial<User> & { file?: File } = { ...image };
 
     formData.keys().forEach(key => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       body[key as keyof User] = formData.get(key) as any;
     });
 
-    if(body.password) delete body.password;
-    if(body.file) delete body.file;
+    if (body.password) delete body.password;
+    if (body.file) delete body.file;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { accessToken, subscription, ...currentUser } = auth;
@@ -73,7 +105,8 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json(updatedUser);
-  } catch {
+  } catch (err) {
+    console.log('Error:', err);
     return NextResponse.json(
       { message: 'Error inesperado al actualizar el usuario' },
       { status: 500 }

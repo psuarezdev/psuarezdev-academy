@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/breadcrumb';
 import LessonsManager from './_components/lessons-manager';
 import { Lesson } from '@prisma/client';
-import { removeFile } from '@/lib/upload';
 import { UploadPaths } from '@/lib/config';
 import { remove, getVideo } from '@/lib/cloudinary';
 
@@ -104,7 +103,7 @@ export default async function UnitDetails({ params }: UnitDetailsProps) {
     if (data.video) {
       const lastDotIndex = data.video.lastIndexOf('.');
       const fileOriginalName = data.video.slice(0, lastDotIndex);
-      await removeFile(UploadPaths.CoursesVideos, fileOriginalName);
+      await remove(UploadPaths.CoursesVideos, fileOriginalName);
     }
 
     const newDuration = data.duration ?? lessonFound.duration;

@@ -65,8 +65,7 @@ export default async function Users() {
       await remove(UploadPaths.Avatars, userFound.imagePublicId, {
         resource_type: 'image',
         type: 'upload',
-      }
-      );
+      });
     }
 
     await prisma.user.update({
