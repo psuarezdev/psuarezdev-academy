@@ -5,6 +5,12 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
+    const course = await prisma.course.findUnique({
+      where: {
+        id: params.courseId
+      },
+    });
+
     const ratings = await prisma.rating.findMany({
       where: {
         courseId: params.courseId
@@ -23,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
       );
     }
 
-    return NextResponse.json(ratings);
+    return NextResponse.json({ course, ratings });
   } catch {
     NextResponse.json(
       { message: 'Error al obtener las valoraciones' },

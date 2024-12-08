@@ -34,11 +34,11 @@ export default function InstructorProfile({ instructor, courses, currentPage, to
 
   return (
     <div className="grid gap-6 md:grid-cols-3">
-      <Card className="md:col-span-1 flex flex-col items-center">
+      <Card className="md:col-span-1 flex flex-col items-center h-fit">
         <CardHeader>
           <Avatar className="w-24 h-24 mx-auto">
             <AvatarImage 
-              src={instructor.image ?? undefined} 
+              src={instructor.imageUrl ?? undefined} 
               alt="Avatar" 
             />
             <AvatarFallback>
@@ -106,7 +106,7 @@ export default function InstructorProfile({ instructor, courses, currentPage, to
       </Card>
       <div className="md:col-span-2">
         <h2 className="text-2xl font-bold mb-4">Cursos del profesor</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
           {courses.map(course => (
             <CourseCard
               key={course.id}

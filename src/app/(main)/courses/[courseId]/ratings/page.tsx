@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Rating, User } from '@prisma/client';
+import type { Rating, Course, User } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -9,8 +9,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
-type RatingsResponse = Rating & {
-  user: Omit<User, 'password'>
+type RatingsResponse = {
+  course: Course;
+  ratings: (Rating & {
+  user: Omit<User, 'password'>;
+  })[];
 };
 
 interface RatingsProps {
@@ -24,7 +27,7 @@ export default async function Ratings({ params }: RatingsProps) {
 
   if (!res.ok) return redirect(`/courses/${params.courseId}`);
 
-  const data = await res.json() as RatingsResponse[];
+  const data = await res.json() as RatingsResponse;
 
   return (
     <div className="container mx-auto py-8">
@@ -33,9 +36,10 @@ export default async function Ratings({ params }: RatingsProps) {
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver al curso
         </Link>
       </Button>
-      <h1 className="text-3xl font-bold mb-6">Valoraciones del Curso</h1>
+      <h1 className="text-3xl font-bold mb-3">Valoraciones del Curso</h1>
+      <h2 className="text-xl font-medium text-muted-foreground mb-6">{data.course.title}</h2>
       <div className="grid gap-6">
-        {data.map(rating => (
+        {data.ratings.map(rating => (
           <Card key={rating.id}>
             <CardHeader>
               <div className="flex items-center justify-between">

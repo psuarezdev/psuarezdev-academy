@@ -6,11 +6,11 @@ const links = [
     href: 'terms-of-service'
   }, 
   {
-    label: 'Politica de privacidad',
+    label: 'Política de privacidad',
     href: 'privacy-policy'
   },
   {
-    label: 'Politica de cookies',
+    label: 'Política de cookies',
     href: 'cookie-policy'
   }
 ];

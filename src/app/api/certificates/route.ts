@@ -150,7 +150,8 @@ export async function POST(req: NextRequest) {
         userId: auth.id,
         duration: course.duration,
         issuedAt: lastCompletedLesson.completedAt,
-        image: ''
+        imageUrl: '',
+        imagePublicId: ''
       },
       include: {
         user: {
@@ -177,7 +178,8 @@ export async function POST(req: NextRequest) {
     const { success } = await generateCertificate(endPointPath, {
       ...certificate,
       totalDuration: course.duration,
-      image: certificatePath
+      imageUrl: certificatePath,
+      imagePublicId: certificatePath
     });
 
     if (!success) {
@@ -206,7 +208,8 @@ export async function POST(req: NextRequest) {
     await prisma.certificate.update({
       where: { id: certificate.id },
       data: {
-        image: cloudinaryRes.secure_url
+        imageUrl: cloudinaryRes.secure_url,
+        imagePublicId: cloudinaryRes.public_id
       }
     });
 
