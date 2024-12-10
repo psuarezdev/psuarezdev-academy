@@ -42,7 +42,6 @@ model User {
   @@map("users")
 }
 
-// TODO: Añadir las categorias al panel de admin
 model Category {
   id      String   @id @default(cuid())
   name    String   @unique
