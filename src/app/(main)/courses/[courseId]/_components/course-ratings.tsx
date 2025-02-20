@@ -22,7 +22,10 @@ export default function CourseRatings({ courseId, averageRating, ratingsCount }:
               <RatingStars averageRating={averageRating} />
               <div>
                 <span className="font-semibold">{roundToHalf(averageRating)}</span>{' '}
-                <span className="text-muted-foreground">({ratingsCount} valoraciones)</span>
+                 <span className="text-muted-foreground">
+                  ({ratingsCount}{' '}
+                  valoraci{ratingsCount == 1 ? 'ó' : ''}n{ratingsCount != 1 ? 'es' : ''})
+                </span>
               </div>
             </div>
           </CardContent>
