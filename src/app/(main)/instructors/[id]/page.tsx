@@ -21,9 +21,7 @@ export default async function TeacherPage({ params, searchParams }: TeacherPageP
     }),
     prisma.course.findMany({
       where: { userId: params.id },
-      include: {
-        category: true,
-      },
+      include: { category: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: 'desc' },
@@ -31,6 +29,14 @@ export default async function TeacherPage({ params, searchParams }: TeacherPageP
   ]);
 
   if (!instructor) return redirect('/');
+
+  const ratings = await prisma.rating.findMany({
+    where: {
+      course: {
+        userId: instructor.id
+      }
+    }
+  });
 
   const totalPages = Math.ceil(coursesCount / pageSize);
 
@@ -41,6 +47,7 @@ export default async function TeacherPage({ params, searchParams }: TeacherPageP
         courses={courses}
         currentPage={page}
         totalPages={totalPages}
+        ratings={ratings}
       />
     </div>
   );
