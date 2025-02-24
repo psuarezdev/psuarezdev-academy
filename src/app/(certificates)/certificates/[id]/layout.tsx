@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 interface CertificatesLayoutProps {
   children: React.ReactNode;
@@ -35,7 +37,7 @@ export default async function CertificatesLayout({ children, params }: Certifica
                 <Link href={`/certificates/${certificate.id}`}>
                   <Image
                     key={certificate.id}
-                    src={certificate.imageUrl}
+                    src={getUploadPath(UploadPaths.Certificates, `${certificate.id}.png`)}
                     alt={`Certificado ${certificate.id}`}
                     width={250}
                     height={250}

@@ -1,16 +1,13 @@
 import os from 'node:os';
 import { spawn } from 'node:child_process';
 import { type NextRequest, NextResponse } from 'next/server';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { getAuth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { join } from 'node:path';
 import { Certificate, Course, User } from '@prisma/client';
 import { UploadPaths } from '@/lib/config';
-import { formatDuration } from '@/lib/utils';
-import { upload } from '@/lib/cloudinary';
-import { unlink } from 'node:fs/promises';
+import { formatDate, formatDuration } from '@/lib/utils';
+import { rename } from 'node:fs/promises';
 
 type CertificateWithRelations = Certificate & {
   totalDuration: number;
@@ -33,7 +30,7 @@ function generateCertificate(cwd: string, certificate: CertificateWithRelations)
         `${certificate.user.firstName} ${certificate.user.lastName}`,
         certificate.course.title,
         formatDuration(certificate.totalDuration),
-        format(certificate.issuedAt, "d 'de' MMMM 'de' yyyy", { locale: es }),
+        formatDate(certificate.issuedAt),
         `${certificate.course.user.firstName} ${certificate.course.user.lastName}`
       ],
       { cwd }
@@ -150,8 +147,6 @@ export async function POST(req: NextRequest) {
         userId: auth.id,
         duration: course.duration,
         issuedAt: lastCompletedLesson.completedAt,
-        imageUrl: '',
-        imagePublicId: ''
       },
       include: {
         user: {
@@ -177,9 +172,7 @@ export async function POST(req: NextRequest) {
 
     const { success } = await generateCertificate(endPointPath, {
       ...certificate,
-      totalDuration: course.duration,
-      imageUrl: certificatePath,
-      imagePublicId: certificatePath
+      totalDuration: course.duration
     });
 
     if (!success) {
@@ -190,28 +183,10 @@ export async function POST(req: NextRequest) {
       throw new Error('Error al generar el certificado');
     }
 
-    const cloudinaryRes = await upload(certificatePath, {
-      resource_type: 'image',
-      type: 'upload',
-      folder: `psuarezdev-academy/${UploadPaths.Certificates}`,
-    });
-
-    await unlink(certificatePath);
-
-    if (!cloudinaryRes || !cloudinaryRes.secure_url) {
-      return NextResponse.json(
-        { message: 'Error al crear el certificado' },
-        { status: 500 }
-      );
-    }
-
-    await prisma.certificate.update({
-      where: { id: certificate.id },
-      data: {
-        imageUrl: cloudinaryRes.secure_url,
-        imagePublicId: cloudinaryRes.public_id
-      }
-    });
+    await rename(
+      certificatePath, 
+      join(process.cwd(), '..', 'uploads', UploadPaths.Certificates, `${certificate.id}.png`)
+    );
 
     return NextResponse.json(certificate, { status: 201 });
   } catch {

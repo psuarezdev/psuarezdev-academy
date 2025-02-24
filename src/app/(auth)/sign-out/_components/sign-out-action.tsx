@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 interface SignOutActionProps {
-  action: () => Promise<void>;
+  action: () => Promise<void>
 }
 
 export default function SignOutAction({ action }: SignOutActionProps) {
   useEffect(() => {
-    action().then();
-  }, []);
+    action().then()
+  }, [])
 
   return null;
 }

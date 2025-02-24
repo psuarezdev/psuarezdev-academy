@@ -24,7 +24,7 @@ export default async function TeacherPage({ params, searchParams }: TeacherPageP
       include: { category: true },
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { averageRating: 'desc' }
     })
   ]);
 

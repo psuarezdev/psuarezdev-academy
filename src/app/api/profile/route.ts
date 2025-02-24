@@ -3,7 +3,7 @@ import type { User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { getAuth } from '@/lib/auth';
 import { UploadPaths } from '@/lib/config';
-import { remove } from '@/lib/cloudinary';
+import { removeFile } from '@/lib/upload';
 
 export async function GET() {
   try {
@@ -39,17 +39,11 @@ export async function PATCH(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file');
 
-    let image: {
-      imageUrl?: string | null;
-      imagePublicId?: string | null;
-    } = {
-      imageUrl: undefined,
-      imagePublicId: undefined
-    };
+    let image: string | undefined = undefined;
 
     if (file && file instanceof File) {
-      if (auth.imagePublicId) {
-        await remove(UploadPaths.Avatars, auth.imagePublicId);
+      if (auth.avatar) {
+        await removeFile(UploadPaths.Avatars, auth.avatar);
       }
 
       const formData = new FormData();
@@ -65,20 +59,14 @@ export async function PATCH(req: NextRequest) {
 
       const fileData = await res.json();
 
-      if (fileData?.secureUrl && fileData?.publicId) {
-        image = {
-          imageUrl: fileData.secureUrl,
-          imagePublicId: fileData.publicId
-        };
+      if (fileData?.fileName) {
+        image = fileData.fileName as string;
       } else {
-        image = {
-          imageUrl: auth.imageUrl,
-          imagePublicId: auth.imagePublicId
-        };
+        image = auth.avatar ?? undefined;
       }
     }
 
-    const body: Partial<User> & { file?: File } = { ...image };
+    const body: Partial<User> & { file?: File } = { avatar: image };
 
     formData.keys().forEach(key => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,8 +93,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json(updatedUser);
-  } catch (err) {
-    console.log('Error:', err);
+  } catch {
     return NextResponse.json(
       { message: 'Error inesperado al actualizar el usuario' },
       { status: 500 }

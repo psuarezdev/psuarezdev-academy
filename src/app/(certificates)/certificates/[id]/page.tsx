@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import ShareButton from './_components/share-button';
 import { getAuth } from '@/lib/auth';
 import DownloadButton from './_components/DownloadButton';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 
 interface CertificateProps {
@@ -24,7 +26,7 @@ export default async function Certificate({ params }: CertificateProps) {
     <div className="flex flex-col items-center justify-center w-full min-h-screen">
       <Image
         className="w-full h-full max-w-[1120px] max-h-[792px] mx-auto"
-        src={certificate.imageUrl}
+        src={getUploadPath(UploadPaths.Certificates, `${certificate.id}.png`)}
         alt={`Certificado ${certificate.id}`}
         width={1120}
         height={792}

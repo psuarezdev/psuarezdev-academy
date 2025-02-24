@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import EditCourseForm from './_components/edit-course-form';
 import { Course } from '@prisma/client';
 import UnitsManager from './_components/units-manager';
-import { remove } from '@/lib/cloudinary';
+import { removeFile } from '@/lib/upload';
 import { UploadPaths } from '@/lib/config';
 
 interface CourseEditProps {
@@ -45,16 +45,15 @@ export default async function CourseEdit({ params }: CourseEditProps) {
   const editCourse = async(data: Partial<Course>) => {
     'use server';
   
-    if(data.imageUrl) {
-      await remove(UploadPaths.CoursesImages, course.imagePublicId);
+    if(data.image) {
+      await removeFile(UploadPaths.CoursesImages, course.image);
     }
 
     await prisma.course.update({
       where,
       data: {
         ...data,
-        imageUrl: data.imageUrl ?? course.imageUrl,
-        imagePublicId: data.imagePublicId ?? course.imagePublicId
+        image: data.image ?? course.image
       }
     });
   };

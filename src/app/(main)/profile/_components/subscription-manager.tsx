@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDate } from '@/lib/utils';
 
 interface SubscriptionManagerProps {
   subscription: {
@@ -56,7 +55,7 @@ export default function SubscriptionManager({ subscription }: SubscriptionManage
           <p>Plan actual: {subscription.name}</p>
           <p>Estado: {subscription.status === 'active' ? 'Activa' : 'Inactiva'}</p>
           <p>
-            Fecha de renovación: {format(subscription.renewalDate, "d 'de' MMMM 'de' yyyy", { locale: es })}
+            Fecha de renovación: {formatDate(subscription.renewalDate)}
           </p>
         </div>
       </CardContent>

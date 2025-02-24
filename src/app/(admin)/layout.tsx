@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <header className="flex items-center justify-between h-16 border-b px-4">
             <div className="flex items-center">
               <SidebarTrigger />
-              <h2 className="ml-4 text-xl font-semibold">Admin Dashboard</h2>
+              <h2 className="ml-4 text-xl font-semibold">Panel de administrador</h2>
             </div>
             <ThemeToogle />
           </header>

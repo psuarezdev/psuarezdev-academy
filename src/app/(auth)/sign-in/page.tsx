@@ -26,7 +26,7 @@ export default function SingIn() {
         <p className="text-sm text-gray-600">
           ¿No tienes una cuenta?{' '}
           <Link href="/sign-up" className="text-primary hover:underline">
-            Resgistrarse
+            Registrarse
           </Link>
         </p>
       </CardFooter>

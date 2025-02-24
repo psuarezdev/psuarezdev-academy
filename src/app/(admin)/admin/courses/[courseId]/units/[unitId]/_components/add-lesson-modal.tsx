@@ -48,7 +48,7 @@ const lessonSchema = z.object({
 type LessonFormData = z.infer<typeof lessonSchema>;
 
 interface AddLessonModalProps {
-  lesson?: Lesson & { videoUrl: string | null; };
+  lesson?: Lesson;
   onClose: () => void;
   onSubmit: (data: Partial<Lesson>) => Promise<void>;
 }
@@ -56,7 +56,7 @@ interface AddLessonModalProps {
 export default function AddLessontModal({ lesson, onClose, onSubmit }: AddLessonModalProps) {
   const { toast } = useToast();
   const [editorValue, setEditorValue] = useState<string | undefined>(lesson?.description);
-  const [videoPreview, setVideoPreview] = useState<string | null>(lesson?.videoUrl ?? null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(lesson?.video ?? null);
   const form = useForm<LessonFormData>({
     resolver: zodResolver(lessonSchema),
     defaultValues: {

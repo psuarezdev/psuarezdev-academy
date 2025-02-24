@@ -4,7 +4,7 @@ import CoursesManager from './_components/courses-manager';
 import { Course } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { UploadPaths } from '@/lib/config';
-import { remove } from '@/lib/cloudinary';
+import { removeFile } from '@/lib/upload';
 
 export default async function Courses() {
   const auth = await getAuth();
@@ -64,7 +64,7 @@ export default async function Courses() {
       throw new Error(`No existe el curso con id: ${id}`);
     }
 
-    await remove(UploadPaths.CoursesImages,  course.imagePublicId);
+    await removeFile(UploadPaths.CoursesImages,  course.image);
     
     await prisma.course.delete({ where: { id } });
   };

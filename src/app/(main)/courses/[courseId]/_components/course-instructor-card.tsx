@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 import { User } from '@prisma/client';
 
 export default function CourseInstructorCard({ user }: { user: Omit<User, 'password'>; }) {
@@ -11,7 +13,7 @@ export default function CourseInstructorCard({ user }: { user: Omit<User, 'passw
       <CardContent className="flex items-center gap-4">
         <Avatar className="h-16 w-16">
           <AvatarImage
-            src={user.imageUrl ?? undefined}
+            src={user.avatar ? getUploadPath(UploadPaths.Avatars, user.avatar) : undefined}
             alt={`${user?.firstName} ${user?.lastName}`}
           />
           <AvatarFallback>

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { type User } from '@prisma/client';
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/lib/config';
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE, UploadPaths } from '@/lib/config';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { getUploadPath } from '@/lib/utils';
 
 const userSchema = z.object({
   firstName: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').optional(),
@@ -32,7 +33,10 @@ const userSchema = z.object({
   linkedin: z.string().url('URL no válida').optional().or(z.literal('')),
   image: z
     .any()
-    .refine((files) => files?.length === 0 || files?.[0]?.size <= MAX_IMAGE_SIZE, `Tamaño máximo permitido ${MAX_IMAGE_SIZE / 1024 / 1024}MB`)
+    .refine(
+      (files) => files?.length === 0 || files?.[0]?.size <= MAX_IMAGE_SIZE,
+      `Tamaño máximo permitido ${MAX_IMAGE_SIZE / 1024 / 1024}MB`
+    )
     .refine(
       (files) => files?.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       `Solo los formatos ${ACCEPTED_IMAGE_TYPES.join(', ').replaceAll('image/', '.')} están soportados`
@@ -50,7 +54,7 @@ export default function EditProfileForm({ authUser }: EditProfileFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(
-    authUser?.imageUrl ? authUser.imageUrl : null
+    authUser.avatar ? getUploadPath(UploadPaths.Avatars, authUser.avatar) : null
   );
 
   const form = useForm<UserFormData>({
@@ -91,8 +95,8 @@ export default function EditProfileForm({ authUser }: EditProfileFormProps) {
 
       if (data.image?.[0]) {
         formData.append('file', data.image?.[0]);
-      }    
-      
+      }
+
       formData.delete('image');
 
       const updateRes = await fetch('/api/profile', {
@@ -212,7 +216,7 @@ export default function EditProfileForm({ authUser }: EditProfileFormProps) {
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Porfolio</FormLabel>
+                <FormLabel>Web</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

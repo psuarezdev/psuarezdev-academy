@@ -4,6 +4,8 @@ import { Comment, User } from '@prisma/client';
 import DeleteCommentButton from './delete-comment-button';
 import { Separator } from '@/components/ui/separator';
 import Description from '@/components/description';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 interface CommentsListProps {
   courseId: string;
@@ -23,8 +25,8 @@ export default function CommentsList({ authUser, courseId, lessonId, comments }:
             <div className="flex w-full space-x-4">
               <Avatar>
                 <AvatarImage 
-                src={comment.user.imageUrl ?? undefined} 
-                alt="Avatar"
+                  src={comment.user.avatar ? getUploadPath(UploadPaths.Avatars, comment.user.avatar) : undefined} 
+                  alt="Avatar"
                 />
                 <AvatarFallback>
                   {comment.user?.firstName?.charAt(0)?.toUpperCase()}{comment.user?.lastName?.charAt(0)?.toUpperCase()}

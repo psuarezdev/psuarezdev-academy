@@ -18,8 +18,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import { cn, isValidLevel } from '@/lib/utils';
-import InstructorSelector from '@/components/instructor-selector';
+import { cn, getUploadPath, isValidLevel } from '@/lib/utils';
+import InstructorSelector from '@/components/user-selector';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CategorySelector from '@/components/category-selector';
 
@@ -73,7 +73,7 @@ export default function EditCourseForm({ authUser, course, categories, users, ed
   const [editorValue, setEditorValue] = useState<string | undefined>(
     course.description.replaceAll('"', '').replaceAll('\\', '')
   );
-  const [imagePreview, setImagePreview] = useState(course.imageUrl);
+  const [imagePreview, setImagePreview] = useState(getUploadPath(UploadPaths.CoursesImages, course.image));
   const form = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -101,10 +101,7 @@ export default function EditCourseForm({ authUser, course, categories, users, ed
 
   const handleSubmit = async (data: CourseFormData) => {
     try {
-      let image = {
-        imageUrl: undefined,
-        imagePublicId: undefined
-      };
+      let image: string | undefined = undefined;
 
       if (data.image) {
         const formData = new FormData();
@@ -118,11 +115,8 @@ export default function EditCourseForm({ authUser, course, categories, users, ed
 
         const fileData = await res.json();
 
-        if (fileData?.secureUrl && fileData?.publicId) {
-          image = {
-            imageUrl: fileData.secureUrl,
-            imagePublicId: fileData.publicId
-          };
+        if (fileData?.fileName) {
+          image = fileData.fileName as string;
         }
 
         delete data.image;
@@ -130,7 +124,7 @@ export default function EditCourseForm({ authUser, course, categories, users, ed
 
       await editCourse({
         ...data,
-        ...image,
+        image,
         isActive: data.isActive === 'true',
         prerequisites: data.prerequisites ?? null
       });

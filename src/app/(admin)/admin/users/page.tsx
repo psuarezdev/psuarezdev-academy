@@ -5,12 +5,12 @@ import { hash } from 'bcrypt';
 import { UploadPaths } from '@/lib/config';
 import { getAuth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { remove } from '@/lib/cloudinary';
+import { removeFile } from '@/lib/upload';
 
 export default async function Users() {
   const auth = await getAuth();
 
-  if (!auth) return redirect('/');
+  if (!auth || auth.role !== 'admin') return redirect('/');
 
   const users = await prisma.user.findMany({
     where: {
@@ -61,11 +61,8 @@ export default async function Users() {
       throw new Error('No se puede cambiar el rol a un instructor con cursos asociados');
     }
 
-    if (data.imageUrl && userFound.imagePublicId) {
-      await remove(UploadPaths.Avatars, userFound.imagePublicId, {
-        resource_type: 'image',
-        type: 'upload',
-      });
+    if (data.avatar && userFound.avatar) {
+      await removeFile(UploadPaths.Avatars, userFound.avatar);
     }
 
     await prisma.user.update({
@@ -79,8 +76,7 @@ export default async function Users() {
         github: data.github ?? userFound.github,
         linkedin: data.linkedin ?? userFound.linkedin,
         website: data.website ?? userFound.website,
-        imageUrl: data.imageUrl ?? userFound.imageUrl,
-        imagePublicId: data.imagePublicId ?? userFound.imagePublicId
+        avatar: data.avatar ?? userFound.avatar
       }
     });
   };
@@ -90,19 +86,15 @@ export default async function Users() {
 
     const userFound = await prisma.user.findUnique({
       where: { id },
-      select: { imagePublicId: true }
+      select: { avatar: true }
     });
 
     if (!userFound) {
       throw new Error(`No se ha encontrado un usuario con el id ${id}`);
     }
 
-    if (userFound.imagePublicId) {
-      await remove(UploadPaths.Avatars, userFound.imagePublicId, {
-        resource_type: 'image',
-        type: 'upload',
-      }
-      );
+    if (userFound.avatar) {
+      await removeFile(UploadPaths.Avatars, userFound.avatar);
     }
 
     await prisma.user.delete({ where: { id } });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Editor, EditorTextChangeEvent } from 'primereact/editor';
@@ -29,10 +29,10 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 import { cn, isValidLevel } from '@/lib/utils';
-import InstructorSelector from '../../../../../components/instructor-selector';
+import InstructorSelector from '@/components/user-selector';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import CategorySelector from '../../../../../components/category-selector';
+import CategorySelector from '@/components/category-selector';
 
 interface AddCourseModalProps {
   authUser: Omit<User, 'password'>;
@@ -81,6 +81,7 @@ type CourseFormData = z.infer<typeof courseSchema>;
 export default function AddCourseModal({ authUser, users, categories, onSubmit }: AddCourseModalProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const form = useForm<CourseFormData>({ resolver: zodResolver(courseSchema) });
   const [editorValue, setEditorValue] = useState<string | undefined>(undefined);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -103,10 +104,7 @@ export default function AddCourseModal({ authUser, users, categories, onSubmit }
 
   const handleSubmit = async (data: CourseFormData) => {
     try {
-      let image = {
-        imageUrl: undefined,
-        imagePublicId: undefined
-      };
+      let image: string | undefined = undefined;
 
       if (data.image) {
         const formData = new FormData();
@@ -120,24 +118,20 @@ export default function AddCourseModal({ authUser, users, categories, onSubmit }
 
         const fileData = await res.json();
 
-        if (fileData?.secureUrl && fileData?.publicId) {
-          image = {
-            imageUrl: fileData.secureUrl,
-            imagePublicId: fileData.publicId
-          }
+        if (fileData?.fileName) {
+          image = fileData.fileName as string;
         };
         
         delete data.image;
       }
 
-      if (!image.imageUrl || !image.imagePublicId) {
+      if (!image) {
         throw new Error('La imagen es obligatoria para crear el curso');
       }
 
       await onSubmit({
         ...data,
-        imageUrl: image.imageUrl,
-        imagePublicId: image.imagePublicId,
+        image,
         duration: 0,
         averageRating: 0,
         lessons: 0,
@@ -145,10 +139,12 @@ export default function AddCourseModal({ authUser, users, categories, onSubmit }
         level: data.level,
         prerequisites: data.prerequisites ?? null
       });
+      
       setImagePreview(null);
       setEditorValue(undefined);
       form.reset();
       router.refresh();
+      triggerRef.current?.click();
     } catch (err) {
       console.error('Error enviando el formulario:', err);
       toast({
@@ -167,7 +163,7 @@ export default function AddCourseModal({ authUser, users, categories, onSubmit }
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger ref={triggerRef} asChild>
         <Button>Añadir nuevo curso</Button>
       </DialogTrigger>
       <DialogContent>

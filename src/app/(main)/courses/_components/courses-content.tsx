@@ -55,8 +55,7 @@ export default function CoursesContent({ categories, courses, currentPage, total
   };
 
   const filteredCourses = courses.filter(course => {
-    const matchesCategory = !selectedCategory || course.category.id === selectedCategory;
-    return matchesCategory;
+    return !selectedCategory || (course.category.id === selectedCategory);
   });
 
   return (
@@ -65,13 +64,16 @@ export default function CoursesContent({ categories, courses, currentPage, total
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2">Categorías</h2>
           {categories.map(category => (
-            <div key={category.id} className="flex items-center mb-2">
+            <div key={category.id} className="flex items-center mb-2 transition-opacity hover:opacity-80">
               <Checkbox
                 id={category.id}
                 checked={selectedCategory === category.id}
                 onCheckedChange={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
               />
-              <label htmlFor={category.id} className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label 
+                htmlFor={category.id} 
+                className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 {category.name}
               </label>
             </div>

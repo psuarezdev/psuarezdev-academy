@@ -9,7 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { User } from '@prisma/client';
 import Stripe from 'stripe';
-import { Award, GraduationCap, Heart, LogOut, UserIcon } from 'lucide-react';
+import { Award, GraduationCap, Heart, LogOut, Star, UserIcon } from 'lucide-react';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 interface AuthDropdownProps {
   authUser: Omit<User & {
@@ -17,13 +19,41 @@ interface AuthDropdownProps {
   }, 'password'>;
 }
 
+const navLinks = [
+  {
+    label: 'Perfil',
+    href: '/profile',
+    icon: UserIcon
+  },
+  {
+    label: 'Certificados',
+    href: '/certificates',
+    icon: Award
+  },
+  {
+    label: 'Mis favoritos',
+    href: '/favorites',
+    icon: Heart
+  },
+  {
+    label: 'Mi aprendizaje',
+    href: '/my-learning',
+    icon: GraduationCap
+  },
+  {
+    label: 'Mis valoraciones',
+    href: '/my-ratings',
+    icon: Star
+  },
+];
+
 export default function AuthDropdown({ authUser }: AuthDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:cursor-pointer" asChild>
         <Avatar className="h-9 w-9">
           <AvatarImage 
-            src={authUser.imageUrl ? authUser.imageUrl : undefined} 
+            src={authUser.avatar ? getUploadPath(UploadPaths.Avatars, authUser.avatar) : undefined} 
             alt="Avatar" 
           />
           <AvatarFallback>{authUser.firstName.charAt(0)}{authUser.lastName.charAt(0)}</AvatarFallback>
@@ -38,30 +68,14 @@ export default function AuthDropdown({ authUser }: AuthDropdownProps) {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/profile" className="block w-full text-left" prefetch={false}>
-            <UserIcon className="w-5 h-5 mr-2" />
-            Perfil
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/certificates" className="block w-full text-left" prefetch={false}>
-            <Award className="w-5 h-5 mr-2" />
-            Certificados
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/favorites" className="block w-full text-left" prefetch={false}>
-            <Heart className="w-5 h-5 mr-2" />
-            Mis favoritos
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/my-learning" className="block w-full text-left" prefetch={false}>
-            <GraduationCap className="w-5 h-5 mr-2" />
-            Mi aprendizaje
-          </Link>
-        </DropdownMenuItem>
+        {navLinks.map(navLink => (
+          <DropdownMenuItem key={navLink.href} asChild>
+            <Link href={navLink.href} className="block w-full text-left" prefetch={false}>
+              <navLink.icon className="w-5 h-5 mr-2" />
+              {navLink.label}
+            </Link>
+          </DropdownMenuItem>
+        ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link className="text-red-500" href="/sign-out">

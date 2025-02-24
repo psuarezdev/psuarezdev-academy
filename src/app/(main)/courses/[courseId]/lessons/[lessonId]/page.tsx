@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ChevronLeft, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, getUploadPath } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import CommentsForm from './_components/comments-form';
@@ -13,7 +13,7 @@ import type { Comment, Lesson, LessonCompletion, Unit, User } from '@prisma/clie
 import prisma from '@/lib/prisma';
 import CommentsList from './_components/comment-list';
 import LessonNavigation from './_components/lesson-navigation';
-import { getVideo } from '@/lib/cloudinary';
+import { UploadPaths } from '@/lib/config';
 
 interface LessonProps {
   params: {
@@ -86,9 +86,7 @@ export default async function Lesson({ params }: LessonProps) {
           </Link>
         </Button>
         <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-          <VideoPlayer 
-            src={getVideo(currentLesson.video)} 
-          />
+          <VideoPlayer src={getUploadPath(UploadPaths.CoursesVideos, currentLesson.video)} />
         </div>
         <div className="mt-4 space-y-4">
           <div className="mb-4">

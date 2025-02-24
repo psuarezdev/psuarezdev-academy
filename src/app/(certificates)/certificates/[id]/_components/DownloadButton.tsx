@@ -4,6 +4,8 @@ import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Certificate, Course } from '@prisma/client';
 import { useToast } from '@/hooks/use-toast';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 interface DownloadButtonProps {
   certificate: Certificate & {
@@ -42,7 +44,7 @@ export default function DownloadButton({ certificate }: DownloadButtonProps) {
   return (
     <Button onClick={async () => {
       await downloadImage(
-        certificate.imageUrl,
+        getUploadPath(UploadPaths.Certificates, `${certificate.id}.png`),
         `certificado-${certificate.course.title.replaceAll(' ', '-')}.png`
       );
     }}>

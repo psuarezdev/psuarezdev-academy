@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { getAuth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { formatDuration } from '@/lib/utils';
+import { formatDuration, getUploadPath } from '@/lib/utils';
 import { Course, Lesson, LessonCompletion, Unit } from '@prisma/client';
 import Link from 'next/link';
+import { UploadPaths } from '@/lib/config';
 
 type FavoritesResponse = Course & {
   units: (Unit & {
@@ -64,7 +65,7 @@ export default async function MyLearning() {
             <Card key={course.id} className="flex flex-col">
               <CardHeader className="p-0">
                 <Image
-                  src={course.imageUrl}
+                  src={getUploadPath(UploadPaths.CoursesImages, course.image)}
                   alt={course.title}
                   width={500}
                   height={250}

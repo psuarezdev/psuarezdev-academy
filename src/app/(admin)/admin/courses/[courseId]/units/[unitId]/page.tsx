@@ -12,7 +12,7 @@ import {
 import LessonsManager from './_components/lessons-manager';
 import { Lesson } from '@prisma/client';
 import { UploadPaths } from '@/lib/config';
-import { remove, getVideo } from '@/lib/cloudinary';
+import { removeFile } from '@/lib/upload';
 
 interface UnitDetailsProps {
   params: {
@@ -101,9 +101,7 @@ export default async function UnitDetails({ params }: UnitDetailsProps) {
     }
 
     if (data.video) {
-      const lastDotIndex = data.video.lastIndexOf('.');
-      const fileOriginalName = data.video.slice(0, lastDotIndex);
-      await remove(UploadPaths.CoursesVideos, fileOriginalName);
+      await removeFile(UploadPaths.CoursesVideos, data.video);
     }
 
     const newDuration = data.duration ?? lessonFound.duration;
@@ -137,9 +135,7 @@ export default async function UnitDetails({ params }: UnitDetailsProps) {
       throw new Error(`No se ha encontrado la lección con id: ${id}`);
     }
 
-    const lastDotIndex = lessonFound.video.lastIndexOf('.');
-    const fileOriginalName = lessonFound.video.slice(0, lastDotIndex);
-    await remove(UploadPaths.CoursesVideos, fileOriginalName);
+    await removeFile(UploadPaths.CoursesVideos, lessonFound.video);
 
     await updateCurrentLessonDuration('decrement', lessonFound.duration);
 
@@ -167,10 +163,6 @@ export default async function UnitDetails({ params }: UnitDetailsProps) {
         createLesson={createLesson}
         updateLesson={updateLesson}
         deleteLesson={deleteLesson}
-        getVideo={async(publicId: string) => {
-          'use server';
-          return getVideo(publicId);
-        }}
       />
     </div>
   );

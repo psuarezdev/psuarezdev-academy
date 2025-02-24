@@ -45,21 +45,21 @@ export default async function Home() {
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col items-center space-y-2 border-gray-800 p-4 rounded-lg">
               <BookOpen className="h-10 w-10 text-primary" />
-              <h2 className="text-xl font-bold">Cursos de Alta Calidad</h2>
+              <h2 className="text-center text-xl font-bold">Cursos de Alta Calidad</h2>
               <p className="text-center text-muted-foreground">
                 Accede a cursos diseñados por expertos en la industria.
               </p>
             </div>
             <div className="flex flex-col items-center space-y-2 border-gray-800 p-4 rounded-lg">
               <Users className="h-10 w-10 text-primary" />
-              <h2 className="text-xl font-bold">Comunidad Activa</h2>
+              <h2 className="text-center text-xl font-bold">Comunidad Activa</h2>
               <p className="text-center text-muted-foreground">
                 Conecta con otros estudiantes y profesionales del sector.
               </p>
             </div>
             <div className="flex flex-col items-center space-y-2 border-gray-800 p-4 rounded-lg">
               <Award className="h-10 w-10 text-primary" />
-              <h2 className="text-xl font-bold">Certificaciones Reconocidas</h2>
+              <h2 className="text-center text-xl font-bold">Certificaciones Reconocidas</h2>
               <p className="text-center text-muted-foreground">
                 Obtén certificados que impulsarán tu carrera profesional.
               </p>

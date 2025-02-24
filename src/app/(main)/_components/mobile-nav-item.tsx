@@ -1,4 +1,8 @@
+'use client';
+
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface MobileNavItemProps { 
   href: string;
@@ -6,10 +10,17 @@ interface MobileNavItemProps {
 }
 
 export default function MobileNavItem({ href, children }: MobileNavItemProps) {
+  const pathname = usePathname();
+
+  console.log(href, pathname, pathname === href);
+
   return (
     <Link
       href={href}
-      className="flex w-full items-center py-2 text-lg font-semibold"
+      className={cn(
+        'flex w-full items-center text-lg font-semibold transition-colors rounded-md p-2',
+        href === pathname && 'bg-foreground text-background'
+      )}
     >
       {children}
     </Link>

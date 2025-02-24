@@ -3,8 +3,9 @@ import { Clock, Code, GraduationCap } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { formatDuration } from '@/lib/utils';
+import { formatDuration, getUploadPath } from '@/lib/utils';
 import { CourseResponse } from '../page';
+import { UploadPaths } from '@/lib/config';
 
 export default function CourseInfoSection({ course }: { course: CourseResponse; }) {
   return (
@@ -21,23 +22,22 @@ export default function CourseInfoSection({ course }: { course: CourseResponse; 
                 <div className="flex items-center gap-1.5 mb-2">
                   <Avatar>
                     <AvatarImage
-                      src={course.user.imageUrl ? course.user.imageUrl : undefined}
+                      src={course.user.avatar ? getUploadPath(UploadPaths.Avatars, course.user.avatar) : undefined}
                       alt="Avatar"
                     />
                     <AvatarFallback>
-                      {course.user.firstName?.charAt(0)?.toUpperCase()}{course.user.lastName?.charAt(0)?.toUpperCase()}
+                      {course.user.firstName?.charAt(0)?.toUpperCase()}
+                      {course.user.lastName?.charAt(0)?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <Link href={`/instructors/${course.user.id}`}>
+                  <Link className="hover:underline" href={`/instructors/${course.user.id}`}>
                     {course.user.firstName} {course.user.lastName}
                   </Link>
                 </div>
-                {course.user.title && (
-                  <p className="text-base">{course.user.title}</p>
-                )}
+                {course.user.title && <p className="text-base">{course.user.title}</p>}
                 {course.user.website && (
                   <p className="text-base [&>a]:-ml-2">
-                    Porfolio:
+                    Web:
                     <a
                       className={buttonVariants({ variant: 'link' })}
                       href={course.user.website}

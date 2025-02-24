@@ -26,6 +26,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getUploadPath } from '@/lib/utils';
 
 const userSchema = z.object({
   id: z.string().optional(),
@@ -38,7 +39,7 @@ const userSchema = z.object({
   github: z.string().url('URL no válida').optional().or(z.literal('')),
   website: z.string().url('URL no válida').optional().or(z.literal('')),
   linkedin: z.string().url('URL no válida').optional().or(z.literal('')),
-  image: z
+  avatar: z
     .any()
     .refine((files) => files?.length === 0 || files?.[0]?.size <= MAX_IMAGE_SIZE, `Tamaño máximo permitido ${MAX_IMAGE_SIZE / 1024 / 1024}MB`)
     .refine(
@@ -58,7 +59,7 @@ interface UserModalProps {
 
 export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(
-    user?.imageUrl ? user.imageUrl : null
+    user?.avatar ? getUploadPath(UploadPaths.Avatars, user.avatar) : null
   );
 
   const form = useForm<UserFormData>({
@@ -90,14 +91,11 @@ export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
 
   const handleSubmit = async (data: UserFormData) => {
     try {
-      let image = {
-        imageUrl: undefined,
-        imagePublicId: undefined
-      };
+      let image: string | undefined = undefined;
 
-      if (data.image) {
+      if (data.avatar) {
         const formData = new FormData();
-        formData.set('file', data.image?.[0]);
+        formData.set('file', data.avatar?.[0]);
         formData.set('dir', UploadPaths.Avatars);
 
         const res = await fetch('/api/uploads', {
@@ -107,19 +105,16 @@ export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
 
         const fileData = await res.json();
 
-        if (fileData?.secureUrl && fileData?.publicId) {
-          image = {
-            imageUrl: fileData?.secureUrl,
-            imagePublicId: fileData?.publicId
-          };
+        if (fileData?.fileName) {
+          image = fileData.fileName as string;
         }
 
-        delete data.image;
+        delete data.avatar;
       }
 
       await onSubmit({
         ...data,
-        ...image,
+        avatar: image,
         id: user ? user.id : undefined,
       });
     } catch (err) {
@@ -148,7 +143,7 @@ export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
                   type="file"
                   accept={ACCEPTED_IMAGE_TYPES.join(', ')}
                   className="mt-2"
-                  {...form.register('image', {
+                  {...form.register('avatar', {
                     onChange: (event) => {
                       handleImageChange(event);
                     }
@@ -265,7 +260,7 @@ export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
               name="website"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Porfolio</FormLabel>
+                  <FormLabel>Web</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

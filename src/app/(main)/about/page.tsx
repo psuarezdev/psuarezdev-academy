@@ -45,7 +45,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-semibold mb-4">Nuestro Equipo</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { name: 'Pablo Suárez', role: 'Fundador', image: '/founder.jpg' },
+            { name: 'Pablo Suárez', role: 'Fundador', image: '/founder.jpeg' },
           ].map((member, index) => (
             <Card key={index}>
               <CardContent className="flex flex-col items-center p-6">

@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BarChart, BookOpen, Clock } from 'lucide-react';
-import { cn, formatDuration } from '@/lib/utils';
+import { cn, formatDuration, getUploadPath } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Course, User } from '@prisma/client';
 import RatingStars from './rating-stars';
+import { UploadPaths } from '@/lib/config';
 
 interface CourseCardProps {
   className?: string;
@@ -23,7 +24,7 @@ export default function CourseCard({ course, className, imageHeightClass }: Cour
         <CardHeader className="p-0">
           <Image
             className={cn('w-full object-cover rounded-t-lg', imageHeightClass ? imageHeightClass : 'h-48')}
-            src={course.imageUrl}
+            src={getUploadPath(UploadPaths.CoursesImages, course.image)}
             alt={course.title}
             width={300}
             height={300}

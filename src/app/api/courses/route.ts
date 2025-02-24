@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
             omit: { password: true }
           }
         },
+        orderBy: { averageRating: 'desc' },
         skip,
         take: pageSize,
       })

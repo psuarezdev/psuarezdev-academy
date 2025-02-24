@@ -40,10 +40,7 @@ BASE_URL="http://localhost:3000"
 DATABASE_URL="postgresql://<user>:<password>@localhost:5432/<db_name>?schema=public"  
 JWT_SECRET=your_jwt_secret  
 STRIPE_SECRET_KEY=your_stripe_secret_key  
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret  
-CLOUDINARY_API_SECRET=your_cloudinary_secret_key
-NEXT_PUBLIC_CLOUDINARY_API_KEY=your_cloudinary_public_key
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 ```
 
 ### Setup Prisma

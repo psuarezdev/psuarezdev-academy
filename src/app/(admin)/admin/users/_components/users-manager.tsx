@@ -38,6 +38,8 @@ import { useToast } from '@/hooks/use-toast';
 import { UserModal } from './user-modal';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 interface UsersManagerProps {
   users: Omit<User, 'password'>[];
@@ -100,12 +102,12 @@ export const columns: ColumnDef<Omit<User, 'password'>>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue('role')}</div>,
   },
   {
-    accessorKey: 'imageUrl',
+    accessorKey: 'avatar',
     header: 'Avatar',
     cell: ({ row }) => (
       <Avatar className="w-12 h-12">
         <AvatarImage 
-          src={row.getValue('imageUrl')} 
+          src={getUploadPath(UploadPaths.Avatars, row.getValue('avatar'))} 
           alt="Avatar" 
         />
         <AvatarFallback>N/A</AvatarFallback>
@@ -281,10 +283,6 @@ export default function UsersManager({ users, createUser, updateUser, deleteUser
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{' '}
-          {table.getFilteredRowModel().rows.length} fila(s) selecionadas.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"

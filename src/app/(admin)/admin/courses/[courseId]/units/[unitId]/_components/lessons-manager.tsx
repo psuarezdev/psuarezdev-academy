@@ -37,6 +37,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import AddLessontModal from './add-lesson-modal';
+import { UploadPaths } from '@/lib/config';
+import { getUploadPath } from '@/lib/utils';
 
 type UnitWithCourseAndLessons = Unit & {
   course: Course;
@@ -77,14 +79,13 @@ interface LessonsManagerProps {
   createLesson: (data: Lesson) => Promise<void>;
   updateLesson: (data: Partial<Lesson>) => Promise<void>;
   deleteLesson: (id: string) => Promise<void>;
-  getVideo: (publicId: string) => Promise<string>;
 }
 
-export default function LessonsManager({ unit, createLesson, updateLesson, deleteLesson, getVideo }: LessonsManagerProps) {
+export default function LessonsManager({ unit, createLesson, updateLesson, deleteLesson }: LessonsManagerProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [lessonToUpdate, setLessonToUpdate] = useState<Lesson & { videoUrl: string | null } | undefined>(undefined);
+  const [lessonToUpdate, setLessonToUpdate] = useState<Lesson | undefined>(undefined);
   const [lessonToDelete, setLessonToDelete] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -209,14 +210,9 @@ export default function LessonsManager({ unit, createLesson, updateLesson, delet
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={async () => {
-                          const {video} = row.original;
-                          const lastDotIndex = video.lastIndexOf('.');
-                          const fileOriginalName = video.slice(0, lastDotIndex);
-                          const videoUrl = await getVideo(fileOriginalName);
-
                           setLessonToUpdate({
                             ...row.original,
-                            videoUrl
+                            video: getUploadPath(UploadPaths.CoursesVideos, row.original.video)
                           });
                           setIsModalOpen(true);
                         }}>
@@ -247,10 +243,6 @@ export default function LessonsManager({ unit, createLesson, updateLesson, delet
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{' '}
-          {table.getFilteredRowModel().rows.length} fila(s) selecionadas.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"

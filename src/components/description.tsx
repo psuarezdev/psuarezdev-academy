@@ -7,7 +7,6 @@ export default function Description({ value }: { value: string }) {
 
   return (
     <div
-
       dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
       className={`
         flex flex-col gap-2.5

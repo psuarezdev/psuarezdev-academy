@@ -19,14 +19,14 @@ import {
 } from '@/components/ui/popover';
 import { Category } from '@prisma/client';
 
-interface InstructorSelectorProps {
+interface CategorySelectorProps {
   categories: Category[];
   onSelect: (category: Category | null) => void;
   defaultValue?: string;
   widthClass?: string;
 }
 
-export default function CategorySelector({ widthClass, defaultValue, categories, onSelect }: InstructorSelectorProps) {
+export default function CategorySelector({ widthClass, defaultValue, categories, onSelect }: CategorySelectorProps) {
   const [value, setValue] = useState(defaultValue ?? '');
   const [open, setOpen] = useState(false);
 
@@ -47,7 +47,7 @@ export default function CategorySelector({ widthClass, defaultValue, categories,
     </PopoverTrigger>
     <PopoverContent className={cn('p-0', widthClass ? widthClass : 'w-[200px]')}>
       <Command>
-        <CommandInput placeholder="Buscar instructor..." />
+        <CommandInput placeholder="Buscar categoría..." />
         <CommandList>
           <CommandEmpty>No hay categorías.</CommandEmpty>
           <CommandGroup>

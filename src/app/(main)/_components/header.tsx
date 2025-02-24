@@ -1,18 +1,18 @@
 import Link from 'next/link'
-import { Award, BadgeEuro, BookOpen, GraduationCap, Heart, Home, LogIn, LogOut, MenuIcon, Shield, UserIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
-import ThemeToogle from '@/components/theme-toggle';
-import NavItem from './nav-item';
-import MobileNavItem from './mobile-nav-item';
-import { User } from '@prisma/client';
 import Stripe from 'stripe';
-import AuthDropdown from './auth-dropdown';
+import type { User } from '@prisma/client';
+import { BookOpen, MenuIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import MobileNav from './mobile-nav';
+import DesktopNav from './desktop-nav';
+
+export type HeaderAuth = Omit<User & {
+  subscription: Stripe.Response<Stripe.Subscription> | null;
+}, 'password'> | null;
 
 interface HeaderProps {
-  auth: Omit<User & {
-    subscription: Stripe.Response<Stripe.Subscription> | null;
-  }, 'password'> | null;
+  auth: HeaderAuth;
 }
 
 export default async function Header({ auth }: HeaderProps) {
@@ -25,100 +25,13 @@ export default async function Header({ auth }: HeaderProps) {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left">
-          <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
-            <BookOpen className="h-6 w-6" />
-            <span className="sr-only">PSuareDev Academy</span>
-          </Link>
-          <div className="grid gap-2 py-6">
-            <MobileNavItem href="/">
-              <Home className="w-5 h-5 mr-2" />
-              Inicio
-            </MobileNavItem>
-            {(auth?.role === 'user' && auth.subscription?.status !== 'active') && (
-              <MobileNavItem href="/pricing">
-                <BadgeEuro className="w-5 h-5 mr-2" />
-                Planes
-              </MobileNavItem>
-            )}
-            <MobileNavItem href="/courses">
-              <BookOpen className="w-5 h-5 mr-2" />
-              Cursos
-            </MobileNavItem>
-            {auth && auth.role === 'admin' && (
-              <MobileNavItem href="/admin">
-                <Shield className="w-6 h-6 mr-2" />
-                Admin
-              </MobileNavItem>
-            )}
-            {auth && (
-              <>
-                <MobileNavItem href="/profile">
-                  <UserIcon className="w-5 h-5 mr-2" />
-                  Perfil
-                </MobileNavItem>
-                <MobileNavItem href="/certificates">
-                  <Award className="w-5 h-5 mr-2" />
-                  Certificados
-                </MobileNavItem>
-                <MobileNavItem href="/my-learning">
-                  <Heart className="w-5 h-5 mr-2" />
-                  Mis favoritos
-                </MobileNavItem>
-                <MobileNavItem href="/my-learning">
-                  <GraduationCap className="w-5 h-5 mr-2" />
-                  Mi aprendizaje
-                </MobileNavItem>
-                <MobileNavItem href="/sign-out">
-                  <LogOut className="w-5 h-5 mr-2" />
-                  Salir
-                </MobileNavItem>
-              </>
-            )}
-            {!auth && (
-              <MobileNavItem href="/sign-in">
-                <LogIn className="w-5 h-5 mr-2" />
-                Acceder
-              </MobileNavItem>
-            )}
-            <ThemeToogle className="w-full mt-5" />
-          </div>
-        </SheetContent>
+        <MobileNav auth={auth} />
       </Sheet>
-      <Link href="/" className="flex items-center justify-center ml-3">
+      <Link href="/" className="flex items-center justify-center lg:ml-3 w-full lg:w-fit transition-opacity hover:opacity-80">
         <BookOpen className="h-6 w-6 text-primary" />
-        <span className="ml-2 text-lg font-bold">PSuareDev Academy</span>
+        <span className="text-lg font-bold ml-2">PSuareDev Academy</span>
       </Link>
-      <nav className="ml-auto hidden lg:flex gap-6">
-        <NavItem href="/">
-          <Home className="w-5 h-5 mr-2" />
-          Inicio
-        </NavItem>
-        {(auth?.role === 'user' && auth.subscription?.status !== 'active') && (
-          <NavItem href="/pricing">
-            <BadgeEuro className="w-5 h-5 mr-2" />
-            Planes
-          </NavItem>
-        )}
-        <NavItem href="/courses">
-          <BookOpen className="w-5 h-5 mr-2" />
-          Cursos
-        </NavItem>
-        {(auth && auth.role === 'admin') && (
-          <NavItem href="/admin">
-            <Shield className="w-6 h-6 mr-2" />
-            Admin
-          </NavItem>
-        )}
-        {!auth && (
-          <NavItem href="/sign-in">
-            <LogIn className="w-5 h-5 mr-2" />
-            Acceder
-          </NavItem>
-        )}
-        <ThemeToogle />
-        {auth && <AuthDropdown authUser={auth} />}
-      </nav>
+      <DesktopNav auth={auth} />
     </header>
   );
 }

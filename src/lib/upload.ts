@@ -5,7 +5,7 @@ import { UploadPaths } from './config';
 
 export async function getFile(dir: UploadPaths, fileName: string) {
   try {
-    const path = join(process.cwd(), 'src', 'uploads', dir, fileName);
+    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
 
     const type = lookup(fileName) || 'application/octet-stream';
     const buffer = await readFile(path);
@@ -27,7 +27,7 @@ export async function uploadFile(dir: UploadPaths, file: File) {
     const fileExtension = file.name.slice(lastDotIndex + 1);
     const fileName = `${fileOriginalName.toLowerCase().replace(/\s/g, '-')}-${Date.now()}.${fileExtension}`;
 
-    const path = join(process.cwd(), 'src', 'uploads', dir, fileName);
+    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
 
     await writeFile(path, buffer);
 
@@ -39,7 +39,7 @@ export async function uploadFile(dir: UploadPaths, file: File) {
 
 export async function removeFile(dir: UploadPaths, fileName: string) {
   try {
-    const path = join(process.cwd(), 'src', 'uploads', dir, fileName);
+    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
     await unlink(path);
     return true;
   } catch {

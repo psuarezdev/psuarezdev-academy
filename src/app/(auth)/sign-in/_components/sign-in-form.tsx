@@ -19,8 +19,11 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const SignInSchema = z.object({
-  email: z.string().min(3, { message: 'El usuario debe tener al menos 3 caracteres' }).email('Correo electrónico inválido'),
-  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  email: z.string()
+    .min(3, { message: 'El usuario debe tener al menos 3 caracteres' })
+    .email('Correo electrónico inválido'),
+  password: z.string()
+    .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
 });
 
 type SignInSchemaType = z.infer<typeof SignInSchema>;

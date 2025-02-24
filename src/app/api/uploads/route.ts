@@ -4,9 +4,6 @@ import { isValidUploadPath } from '@/lib/utils';
 import { UploadPaths } from '@/lib/config';
 import { getAuth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { upload } from '@/lib/cloudinary';
-import { join } from 'node:path';
-import { unlink } from 'node:fs/promises';
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,43 +57,12 @@ export async function POST(req: NextRequest) {
 
     if (!fileName) {
       return NextResponse.json(
-        { message: 'Error al subir el archivos' },
+        { message: 'Error al subir el archivo' },
         { status: 500 }
       );
-    }  
-
-    const path = join(process.cwd(), 'src', 'uploads', dir, fileName);
-
-    const lastDotIndex = fileName.lastIndexOf('.');
-    const fileOriginalName = fileName.slice(0, lastDotIndex);
-
-    const cloudinaryRes = await upload(path, {
-      resource_type: dir === UploadPaths.CoursesVideos ? 'video' : 'image',
-      type: dir === UploadPaths.CoursesVideos ? 'authenticated' : 'upload',
-      public_id: fileOriginalName,
-      folder: `psuarezdev-academy/${dir}`,
-    });
-
-    await unlink(path);
-
-    let publicId: string | undefined = undefined;
-
-    if(cloudinaryRes) {
-      publicId = cloudinaryRes.public_id;
-      if(cloudinaryRes.public_id.includes('/')) {
-        const parts = cloudinaryRes.public_id.split('/');
-        publicId = parts[parts.length - 1];
-      }
     }
 
-    return NextResponse.json(
-      { 
-        message: 'Archivo subido correctamente', 
-        secureUrl: cloudinaryRes?.secure_url,
-        publicId
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({ fileName });
   } catch {
     return NextResponse.json(
       { message: 'Algo salio mal al subir el archivo, error inesperado.' },

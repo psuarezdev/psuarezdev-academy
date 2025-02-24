@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Star, StarHalf } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Editor, EditorTextChangeEvent } from 'primereact/editor';
 
 interface CourseRatingFormProps {
   courseId: string;
@@ -25,6 +25,10 @@ export function CourseRatingForm({ courseId, rating: initalRating, comment: init
     } else {
       setRating(newRating);
     }
+  };
+
+  const handleEditorTextChange = (e: EditorTextChangeEvent) => {
+    setComment(e.htmlValue ?? '');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,28 +66,30 @@ export function CourseRatingForm({ courseId, rating: initalRating, comment: init
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center space-x-1">
-        {[1, 2, 3, 4, 5].map((value) => (
+        {Array.from({ length: 5 }).map((_, index) => (
           <button
-            key={value}
+            key={index + 1}
             type="button"
             className="p-1 focus:outline-none"
-            onClick={() => handleRatingChange(value)}
+            onClick={() => handleRatingChange(index + 1)}
           >
-            {value <= rating ? (
+            {(index + 1) <= rating ? (
               <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-            ) : value - 0.5 === rating ? (
-              <StarHalf className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+            ) : (index + 1) - 0.5 === rating ? (
+              <div className="flex items-center">
+                <StarHalf className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+                <StarHalf className="h-6 w-6 text-yellow-400 -ml-[23px] mr-1 -scale-x-[1]" />
+              </div>
             ) : (
-              <Star className="w-6 h-6 text-gray-300" />
+              <Star className="w-6 h-6 text-yellow-400" />
             )}
           </button>
         ))}
       </div>
-      <Textarea
-        placeholder="Escribe tu reseña aquí..."
+      <Editor
         value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        className="w-full"
+        onTextChange={handleEditorTextChange}
+        style={{ height: '320px' }}
       />
       <Button type="submit" disabled={isSubmitting || rating === 0}>
         {isSubmitting ? 'Enviando...' : 'Enviar valoración'}
