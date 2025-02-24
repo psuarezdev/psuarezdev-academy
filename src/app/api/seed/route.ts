@@ -1,7 +1,5 @@
+import { spawn } from 'node:child_process';
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
-// import { faker } from '@faker-js/faker';
-import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -12,23 +10,23 @@ export async function GET() {
       );
     }
 
-    // TODO: Mejorar esta seed, añadiendo bien las imagenes/videos de los cursos e instructores 
+    const seedProcessPromise: { success: boolean } = await new Promise((resolve, reject) => {
+      const seedProcess = spawn(
+        'docker exec postgres16 pg_dump -U postgres -d psuarezdev_academy -f psuarezdev-academy.sql'
+      );
 
-    await prisma.$executeRaw`TRUNCATE TABLE "lesson_completions", "certificates", "comments", "ratings", "lessons", "units", "courses", "categories", "favorites", "users" RESTART IDENTITY CASCADE;`;
-    await prisma.user.create({
-      data: {
-        firstName: 'Admin',
-        lastName: 'Admin',
-        email: 'admin@admin.com',
-        password: await bcrypt.hash('admin123', 10),
-        role: 'admin'
-      }
+      seedProcess.on('close', (code) => resolve({ success: code === 0 }));
+      seedProcess.on('error', () => reject({ success: false }));
     });
+
+    if(!seedProcessPromise.success) {
+      throw new Error('Error en el SeedProcess');
+    }
 
     return NextResponse.json({ message: 'Seed ejecutada exitosamente' });
   } catch (err) {
     return NextResponse.json(
-      { message: `Error inesperado al ejecutar la seed: ${err}` },
+      { message: `Error inesperado al ejecutar la seed: ${process.env.NODE_ENV !== 'production' ? err : ''}` },
       { status: 500 }
     );
   }

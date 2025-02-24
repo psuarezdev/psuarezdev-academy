@@ -8,7 +8,7 @@ export async function getFile(dir: UploadPaths, fileName: string) {
     const path = join(process.cwd(), '..', 'uploads', dir, fileName);
 
     const type = lookup(fileName) || 'application/octet-stream';
-    const buffer = await readFile(path);
+    const buffer = await readFile(path, 'utf-8');
     const blob = new Blob([buffer], { type });
     
     return new File([blob], fileName, { type });
@@ -29,7 +29,7 @@ export async function uploadFile(dir: UploadPaths, file: File) {
 
     const path = join(process.cwd(), '..', 'uploads', dir, fileName);
 
-    await writeFile(path, buffer);
+    await writeFile(path, buffer, 'utf-8');
 
     return fileName;
   } catch {

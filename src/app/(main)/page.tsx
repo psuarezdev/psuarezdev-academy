@@ -72,7 +72,7 @@ export default async function Home() {
           <h2 className="text-3xl font-bold tracking-tighter text-center mb-8">
             Top 10 Cursos Destacados
           </h2>
-          <ScrollArea className="whitespace-nowrap rounded-md border bg-background">
+          <ScrollArea className="w-full whitespace-nowrap rounded-md border bg-background">
             <div className="flex w-max space-x-4 p-4">
               {topCourses.map(course => (
                 <CourseCard
