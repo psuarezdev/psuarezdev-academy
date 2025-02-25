@@ -213,8 +213,6 @@ export default function RatingsManager({ ratings, users, courses, createRating, 
     }
   };
 
-  console.log(ratingToDelete);
-
   return (
     <div className="w-full">
       <div className="flex items-center py-4 gap-3.5">
@@ -295,10 +293,7 @@ export default function RatingsManager({ ratings, users, courses, createRating, 
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-500"
-                          onClick={() => {
-                            setRatingToDelete(row.original.id);
-                            console.log('aqui');
-                          }}
+                          onClick={() => setRatingToDelete(row.original.id)}
                         >
                           Eliminar
                         </DropdownMenuItem>

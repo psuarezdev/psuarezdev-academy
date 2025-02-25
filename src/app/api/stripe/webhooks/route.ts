@@ -6,14 +6,13 @@ import prisma from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
-  let signature: string | null = null;
-  signature = headers().get('Stripe-Signature');
+  let signature: string | null = headers().get('Stripe-Signature');
   
   if(!signature) signature = req.headers.get('Stripe-Signature');
 
   if (!signature) {
     return NextResponse.json(
-      { message: "Falta el Stripe Signature" },
+      { message: 'Falta el Stripe Signature' },
       { status: 400 }
     );
   }
@@ -38,7 +37,6 @@ export async function POST(req: NextRequest) {
             subscriptionId: event.data.object.id
           }
         });
-
         break;
       case 'customer.subscription.updated':
         customerFound = await getCustomer(event.data.object.customer as string);

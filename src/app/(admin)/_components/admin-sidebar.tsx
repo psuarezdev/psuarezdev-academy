@@ -19,7 +19,7 @@ const menuItems = [
   { href: '/admin', label: 'Dashboard', icon: Home, admin: true },
   { href: '/admin/users', label: 'Usuarios', icon: Users, admin: true },
   { href: '/admin/categories', label: 'Categorías', icon: ChartColumnStacked, admin: true },
-  { href: '/admin/courses', label: 'Cursos', icon: BookOpen, instructor: true },
+  { href: '/admin/courses', label: 'Cursos', icon: BookOpen },
   { href: '/admin/ratings', label: 'Valoraciones', icon: Star, admin: true }
 ];
 
@@ -42,7 +42,6 @@ export default function AdminSidebar({ authUser, onSignOut }: AdminSidebarProps)
         <SidebarMenu className="px-4">
           {menuItems.map(item => {
             if(item.admin && authUser.role !== 'admin') return null;
-            if(item.instructor && authUser.role !== 'instructor') return null;
 
             return (
               <SidebarMenuItem key={item.href}>

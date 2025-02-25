@@ -12,8 +12,6 @@ interface MobileNavItemProps {
 export default function MobileNavItem({ href, children }: MobileNavItemProps) {
   const pathname = usePathname();
 
-  console.log(href, pathname, pathname === href);
-
   return (
     <Link
       href={href}

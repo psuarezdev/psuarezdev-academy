@@ -87,7 +87,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
     });
   } catch {
     return NextResponse.json(
-      { message: 'Error el obtener los detalles del curso' },
+      { message: 'Error al obtener los detalles del curso' },
       { status: 500 }
     );
   }

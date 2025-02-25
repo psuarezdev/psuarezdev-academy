@@ -19,9 +19,13 @@ interface SubscriptionManagerProps {
 }
 
 export default function SubscriptionManager({ subscription }: SubscriptionManagerProps) {
-  const { toast } = useToast();
   const router = useRouter();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+
+  const subscriptionStatus = subscription.isCancelled
+    ? 'Cancelada'
+    : subscription.status === 'active' ? 'Activa' : 'Inactiva'
 
   const handleClick = async () => {
     setIsLoading(true);
@@ -44,8 +48,8 @@ export default function SubscriptionManager({ subscription }: SubscriptionManage
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Tu Suscripción
-          <Badge variant={subscription.isCancelled ? 'destructive' : 'default'}>
-            {subscription.isCancelled ? 'Cancelada' : 'Activa'}
+          <Badge variant={(subscription.isCancelled || subscription.status !== 'active') ? 'destructive' : 'default'}>
+            {subscriptionStatus}
           </Badge>
         </CardTitle>
         <CardDescription>Gestiona tu suscripción actual</CardDescription>
@@ -53,9 +57,10 @@ export default function SubscriptionManager({ subscription }: SubscriptionManage
       <CardContent>
         <div>
           <p>Plan actual: {subscription.name}</p>
-          <p>Estado: {subscription.status === 'active' ? 'Activa' : 'Inactiva'}</p>
+          <p>Estado: {subscriptionStatus}</p>
           <p>
-            Fecha de renovación: {formatDate(subscription.renewalDate)}
+            Fecha de {subscription.isCancelled ? 'expiración' : 'renovación'}:{' '} 
+            {formatDate(subscription.renewalDate)}
           </p>
         </div>
       </CardContent>

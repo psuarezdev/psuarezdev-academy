@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const subscriptions = await getSubscriptions();
 
-    if(!subscriptions) {
+    if (!subscriptions) {
       return NextResponse.json(
         { message: 'Error al obtener las suscripciones' },
         { status: 500 }
@@ -26,19 +26,16 @@ export async function PUT() {
   try {
     const auth = await getAuth();
 
-    if (!auth) {
+    if (!auth || !auth.subscription) {
       return NextResponse.json(
         { message: 'Sin autorización' },
         { status: 401 }
       );
     }
 
-    if (!auth.subscription) return;
-
-    await stripe.subscriptions.update(
-      auth.subscription?.id,
-      { cancel_at_period_end: !auth.subscription?.cancel_at_period_end }
-    );
+    await stripe.subscriptions.update(auth.subscription.id, { 
+      cancel_at_period_end: !auth.subscription?.cancel_at_period_end 
+    });
 
     return NextResponse.json({
       message: `Suscripción ${auth.subscription?.cancel_at_period_end ? 'cancelada' : 'reactivada'}`

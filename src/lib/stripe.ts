@@ -44,7 +44,6 @@ export const getProductDetails = async (product: string | Stripe.Product | Strip
   };
 };
 
-
 export const getCustomer = async(id: string) => {
   try {
     return await stripe.customers.retrieve(id);

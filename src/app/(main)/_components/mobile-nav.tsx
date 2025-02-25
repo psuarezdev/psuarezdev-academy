@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
 import {
   Award,
@@ -10,13 +11,15 @@ import {
   LogOut,
   Shield,
   Star,
-  UserIcon
+  UserIcon,
+  Waypoints
 } from 'lucide-react';
 import { SheetContent } from '@/components/ui/sheet';
 import { DialogTitle } from '@/components/ui/dialog';
 import ThemeToogle from '@/components/theme-toggle';
 import MobileNavItem from './mobile-nav-item';
 import type { HeaderAuth } from './header';
+import { MIN_ROADMAPS_SUBSCRIPTION_PRICE } from '@/lib/config';
 
 export default function MobileNav({ auth }: { auth: HeaderAuth; }) {
   return (
@@ -46,6 +49,12 @@ export default function MobileNav({ auth }: { auth: HeaderAuth; }) {
           <BookOpen className="w-5 h-5 mr-2" />
           Cursos
         </MobileNavItem>
+        {(((auth?.subscription as any)?.plan?.amount ?? 0) / 100) >= MIN_ROADMAPS_SUBSCRIPTION_PRICE && (
+          <MobileNavItem href="/roadmaps">
+            <Waypoints className="w-5 h-5 mr-2" />
+            Rutas
+          </MobileNavItem>
+        )}
         {auth && auth.role === 'admin' && (
           <MobileNavItem href="/admin">
             <Shield className="w-6 h-6 mr-2" />

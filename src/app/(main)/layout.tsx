@@ -8,7 +8,7 @@ import Header from './_components/header';
 export default async function MainLayout({ children }: { children: React.ReactNode; }) {
   const auth = await getAuth();
 
-  if(auth && auth.role === 'instructor') {
+  if(auth?.role === 'instructor') {
     return redirect('/admin/courses');
   }
 

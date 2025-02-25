@@ -18,7 +18,7 @@ export default async function Profile() {
           subscription={{
             status: auth.subscription.status,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            name: `${subscription?.productDetails?.name} - ${((auth.subscription as any)?.plan?.amount ?? '') / 100}€`,
+            name: `${subscription?.productDetails?.name} - ${((auth.subscription as any)?.plan?.amount ?? 0) / 100}€`,
             renewalDate: new Date(auth.subscription.current_period_end * 1000),
             isCancelled: auth.subscription.cancel_at_period_end
           }}

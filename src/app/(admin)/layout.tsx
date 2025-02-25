@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { getAuth, logout } from '@/lib/auth';
 import ThemeToogle from '@/components/theme-toggle';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
@@ -7,7 +7,7 @@ import AdminSidebar from './_components/admin-sidebar';
 export default async function AdminLayout({ children }: { children: React.ReactNode; }) {
   const auth = await getAuth();
 
-  if (!auth || auth.role === 'user') return redirect('/');
+  if (!auth || auth.role === 'user') return notFound();
 
   const onSignOut = async() => {
     'use server';
