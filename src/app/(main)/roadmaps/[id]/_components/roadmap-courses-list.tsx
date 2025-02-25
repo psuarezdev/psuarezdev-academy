@@ -3,10 +3,10 @@ import { type RoadmapResponse } from '../page';
 
 export default function RoadmapCoursesList({ roadmap }: { roadmap: RoadmapResponse }) {
   return (
-    <div className="relative flex flex-col justify-center gap-6 bg-muted/65 dark:bg-[#1C1C1C] p-5 overflow-y-hidden">
+    <div className="relative flex flex-col justify-center gap-6 bg-muted/65 p-5 overflow-y-hidden -z-30">
       {roadmap.courses.map(({ course }, index) => (
-        <div 
-          key={`course-card-${course.id}`} 
+        <div
+          key={`course-card-${course.id}`}
           className="flex items-center gap-6 w-full"
         >
           <div className="relative hidden md:block">
@@ -23,8 +23,8 @@ export default function RoadmapCoursesList({ roadmap }: { roadmap: RoadmapRespon
           <RoadmapCourseCard course={course} />
         </div>
       ))}
-      <div 
-        className="hidden md:block absolute h-full border border-foreground left-11 -z-20"
+      <div
+        className="hidden md:block absolute h-full border border-black/60 dark:border-white/60 left-11 -z-20"
       />
     </div>
   );
