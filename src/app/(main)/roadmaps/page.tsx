@@ -3,6 +3,7 @@ import { Roadmap, RoadmapCourse } from '@prisma/client';
 import qs from 'qs';
 import { getAuth } from '@/lib/auth';
 import RoadmapsContent from './_components/roadmaps-content';
+import { MIN_ROADMAPS_SUBSCRIPTION_PRICE } from '@/lib/config';
 
 export interface RoadmapResponse {
   roadmaps: (Roadmap & {
@@ -24,9 +25,10 @@ export default async function Roadmaps({ searchParams }: RoadmapsProps) {
 
   if (
     !auth ||
-    !auth.subscription
+    !auth.subscription ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (((auth?.subscription as any)?.plan?.amount ?? 0) / 100) < MIN_ROADMAPS_SUBSCRIPTION_PRICE
   ) return notFound();
-  // TODO: Add to condition: (((auth?.subscription as any)?.plan?.amount ?? 0) / 100) < MIN_ROADMAPS_SUBSCRIPTION_PRICE
 
   const queryString = qs.stringify(searchParams, { addQueryPrefix: true });
   const res = await fetch(`${process.env.BASE_URL}/api/roadmaps${queryString}`,

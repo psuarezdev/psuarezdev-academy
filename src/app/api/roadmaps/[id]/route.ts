@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { MIN_ROADMAPS_SUBSCRIPTION_PRICE } from '@/lib/config';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -8,9 +9,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     if (
       !auth ||
-      !auth.subscription
+      !auth.subscription ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (((auth?.subscription as any)?.plan?.amount ?? 0) / 100) < MIN_ROADMAPS_SUBSCRIPTION_PRICE
     ) {
-      // TODO: Add to condition: (((auth?.subscription as any)?.plan?.amount ?? 0) / 100) < MIN_ROADMAPS_SUBSCRIPTION_PRICE
       return NextResponse.json(
         { message: 'Sin Autorización.' },
         { status: 401 }
