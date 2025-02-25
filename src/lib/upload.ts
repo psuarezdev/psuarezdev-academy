@@ -3,12 +3,15 @@ import { readFile, writeFile, unlink } from 'node:fs/promises';
 import { lookup } from 'mime-types';
 import { UploadPaths } from './config';
 
+
+const uploadsPath = join(process.cwd(), '..', 'uploads');
+
 export async function getFile(dir: UploadPaths, fileName: string) {
   try {
-    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
+    const path = join(uploadsPath, dir, fileName);
 
     const type = lookup(fileName) || 'application/octet-stream';
-    const buffer = await readFile(path, 'utf-8');
+    const buffer = await readFile(path);
     const blob = new Blob([buffer], { type });
     
     return new File([blob], fileName, { type });
@@ -27,9 +30,9 @@ export async function uploadFile(dir: UploadPaths, file: File) {
     const fileExtension = file.name.slice(lastDotIndex + 1);
     const fileName = `${fileOriginalName.toLowerCase().replace(/\s/g, '-')}-${Date.now()}.${fileExtension}`;
 
-    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
+    const path = join(uploadsPath, dir, fileName);
 
-    await writeFile(path, buffer, 'utf-8');
+    await writeFile(path, buffer);
 
     return fileName;
   } catch {
@@ -39,7 +42,7 @@ export async function uploadFile(dir: UploadPaths, file: File) {
 
 export async function removeFile(dir: UploadPaths, fileName: string) {
   try {
-    const path = join(process.cwd(), '..', 'uploads', dir, fileName);
+    const path = join(uploadsPath, dir, fileName);
     await unlink(path);
     return true;
   } catch {

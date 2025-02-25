@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Users, BookOpen, LogOut, ChartColumnStacked, Star, Headphones } from 'lucide-react';
+import { Home, Users, BookOpen, LogOut, ChartColumnStacked, Star } from 'lucide-react';
 import type { User } from '@prisma/client';
 import {
   Sidebar,
@@ -20,8 +20,7 @@ const menuItems = [
   { href: '/admin/users', label: 'Usuarios', icon: Users, admin: true },
   { href: '/admin/categories', label: 'Categorías', icon: ChartColumnStacked, admin: true },
   { href: '/admin/courses', label: 'Cursos', icon: BookOpen, instructor: true },
-  { href: '/admin/ratings', label: 'Valoraciones', icon: Star, admin: true },
-  { href: '/admin/support-messages', label: 'Mensajes de soporte', icon: Headphones, support: true }
+  { href: '/admin/ratings', label: 'Valoraciones', icon: Star, admin: true }
 ];
 
 interface AdminSidebarProps { 
@@ -44,7 +43,6 @@ export default function AdminSidebar({ authUser, onSignOut }: AdminSidebarProps)
           {menuItems.map(item => {
             if(item.admin && authUser.role !== 'admin') return null;
             if(item.instructor && authUser.role !== 'instructor') return null;
-            if(item.support && authUser.role !== 'support') return null;
 
             return (
               <SidebarMenuItem key={item.href}>

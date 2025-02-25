@@ -22,6 +22,7 @@ export default function CourseCard({ course, className, imageHeightClass }: Cour
     <Card className={`flex flex-col justify-between h-full hover:shadow-lg transition-shadow duration-300 ${className}`}>
       <div>
         <CardHeader className="p-0">
+          {getUploadPath(UploadPaths.CoursesImages, course.image)}
           <Image
             className={cn('w-full object-cover rounded-t-lg', imageHeightClass ? imageHeightClass : 'h-48')}
             src={getUploadPath(UploadPaths.CoursesImages, course.image)}
