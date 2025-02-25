@@ -38,7 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import AddLessontModal from './add-lesson-modal';
 import { UploadPaths } from '@/lib/config';
-import { getUploadPath } from '@/lib/utils';
+import { formatDuration, getUploadPath } from '@/lib/utils';
 
 type UnitWithCourseAndLessons = Unit & {
   course: Course;
@@ -70,7 +70,7 @@ export const columns: ColumnDef<Lesson>[] = [
         <ArrowUpDown />
       </Button>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue('duration')}</div>,
+    cell: ({ row }) => <div className="capitalize">{formatDuration(row.getValue('duration'))}</div>,
   }
 ];
 

@@ -38,6 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
 import AddCourseModal from './add-course-modal';
+import { formatDuration } from '@/lib/utils';
 
 type CourseWithUserAndCatergory = Course & {
   user: Omit<User, 'password'>;
@@ -117,7 +118,7 @@ export const columns: ColumnDef<CourseWithUserAndCatergory>[] = [
         <ArrowUpDown />
       </Button>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue('duration')}</div>,
+    cell: ({ row }) => <div className="capitalize">{formatDuration(row.getValue('duration'))}</div>,
   },
   {
     accessorKey: 'prerequisites',

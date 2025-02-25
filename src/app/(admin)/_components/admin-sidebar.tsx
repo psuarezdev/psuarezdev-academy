@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Users, BookOpen, LogOut, ChartColumnStacked, Star } from 'lucide-react';
+import { Home, Users, BookOpen, LogOut, ChartColumnStacked, Star, Waypoints } from 'lucide-react';
 import type { User } from '@prisma/client';
 import {
   Sidebar,
@@ -20,6 +20,7 @@ const menuItems = [
   { href: '/admin/users', label: 'Usuarios', icon: Users, admin: true },
   { href: '/admin/categories', label: 'Categorías', icon: ChartColumnStacked, admin: true },
   { href: '/admin/courses', label: 'Cursos', icon: BookOpen },
+  { href: '/admin/roadmaps', label: 'Roadmaps', icon: Waypoints, admin: true },
   { href: '/admin/ratings', label: 'Valoraciones', icon: Star, admin: true }
 ];
 
