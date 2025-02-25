@@ -4,7 +4,7 @@ import { getAuth } from '@/lib/auth';
 import Description from '@/components/description';
 import { Separator } from '@/components/ui/separator';
 import RoadmapInstructorCard from './_components/roadmap-instructor-card';
-import RoadmapCourseCard from './_components/roadmap-course-card';
+import RoadmapCoursesList from './_components/roadmap-courses-list';
 
 interface RoadmapProps {
   params: { id: string; };
@@ -19,7 +19,7 @@ export type RoadampCourseResponse = Course & {
   })[];
 };
 
-type RoadmapResponse = Roadmap & {
+export type RoadmapResponse = Roadmap & {
   courses: (RoadmapCourse & {
     course: RoadampCourseResponse;
   })[];
@@ -54,21 +54,7 @@ export default async function Roadmap({ params }: RoadmapProps) {
             </h1>
             <Description value={roadmap.description} />
           </div>
-          <div className="flex flex-col justify-center gap-6 bg-muted/65 p-5">
-            {roadmap.courses.map(({ course }, index) => (
-              <div key={`course-card-${course.id}`} className="flex items-center gap-6 w-full">
-                <div className="relative">
-                  <div className="py-3 px-5 bg-muted w-fit rounded-full border border-black/60 dark:border-white/60">
-                    {index + 1}
-                  </div>
-                  {index < roadmap.courses.length - 1 && (
-                    <Separator className="absolute h-[2px] left-[-84.5px] -bottom-16 -z-10 rotate-90 w-[220px] bg-black/60 dark:bg-white/60" />
-                  )}
-                </div>
-                <RoadmapCourseCard course={course} />
-              </div>
-            ))}
-          </div>
+          <RoadmapCoursesList roadmap={roadmap} />            
         </section>
         <section className="col-span-3 mt-10 lg:mt-0">
           <h2 className="text-xl font-bold mb-3">
