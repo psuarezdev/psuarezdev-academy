@@ -26,7 +26,7 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
         </h2>
         <div className="text-muted-foreground [&_h2]:text-base mb-5">
           <div className="hidden md:block">
-            <Description value={`${course.description.substring(0, 125).trim()}...`} />
+            <Description value={course.description.substring(0, 125)} />
           </div>
           <div className="block md:hidden">
             <Description value={course.description} />
