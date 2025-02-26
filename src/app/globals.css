@@ -12,6 +12,14 @@ body,
   display: none !important;
 }
 
+.ql-toolbar :where(span, button, svg) {
+  color: var(--muted-foreground) !important;
+}
+
+.ql-picker-options span {
+  color: black !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

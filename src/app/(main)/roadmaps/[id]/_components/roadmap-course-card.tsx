@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Certificate } from '@prisma/client';
@@ -9,6 +11,7 @@ import { Award, BookOpen, Clock } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { type RoadampCourseResponse } from '../page';
 import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
 
 interface RoadmapCourseCardProps {
   course: RoadampCourseResponse;
@@ -16,10 +19,12 @@ interface RoadmapCourseCardProps {
 }
 
 export default function RoadmapCourseCard({ course, certificate }: RoadmapCourseCardProps) {
+  const router = useRouter();
+
   return (
-    <Link
-      href={`/courses/${course.id}`}
+    <article 
       className="relative flex flex-col lg:flex-row items-start gap-3 bg-muted rounded-md p-3 transition-opacity hover:opacity-90 w-full"
+      onClick={() => router.push(`/courses/${course.id}`)}
     >
       <Image
         className="w-full md:w-[300] object-cover rounded-md"
@@ -76,6 +81,6 @@ export default function RoadmapCourseCard({ course, certificate }: RoadmapCourse
           </span>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

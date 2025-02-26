@@ -64,7 +64,13 @@ export default function RoadmapsContent({ roadmaps, currentPage, totalPages, sea
         </Button>
       </form>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-10">
-        {roadmaps.map(roadmap => <RoadmapCard key={roadmap.id} roadmap={roadmap} />)}
+        {roadmaps.map(roadmap => (
+          <RoadmapCard 
+            className="max-w-md"
+            key={roadmap.id} 
+            roadmap={roadmap} 
+          />
+        ))}
       </div>
       <Pagination>
         <PaginationContent>
