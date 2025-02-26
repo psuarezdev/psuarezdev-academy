@@ -11,7 +11,7 @@ export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center">Sobre PSuarezDev Academy</h1>
-      <section className="mb-12">
+      <section className="mb-12 prose-2xl dark:prose-invert">
         <h2 className="text-2xl font-semibold mb-4">Nuestra Misión</h2>
         <p className="text-lg mb-4">
           En PSuarezDev Academy, nuestra misión es proporcionar educación de alta calidad en desarrollo web y tecnologías modernas,

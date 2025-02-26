@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function PrivacyPolicy() {
   return (
     <div className="container mx-auto py-8">
-      <Card className="max-w-3xl mx-auto">
+      <Card className="max-w-3xl mx-auto w-fit">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Política de Privacidad de PSuarezdev Academy</CardTitle>
         </CardHeader>
