@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import ShareButton from './_components/share-button';
 import { getAuth } from '@/lib/auth';
-import DownloadButton from './_components/DownloadButton';
+import DownloadButton from './_components/download-button';
 import { UploadPaths } from '@/lib/config';
 import { getUploadPath } from '@/lib/utils';
 
