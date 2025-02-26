@@ -11,7 +11,7 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
   return (
     <Link
       href={`/courses/${course.id}`}
-      className="flex flex-col md:flex-row items-start gap-3 bg-muted rounded-md p-3 transition-opacity hover:opacity-90 w-full"
+      className="relative flex flex-col md:flex-row items-start gap-3 bg-muted rounded-md p-3 transition-opacity hover:opacity-90 w-full"
     >
       <Image
         className="w-full md:w-[300] object-cover rounded-md"
@@ -44,6 +44,6 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
           </span>
         </div>
       </div>
-    </Link >
+    </Link>
   );
 }

@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       },
       include: {
         courses: {
+          orderBy: { step: 'asc' },
           include: {
             course: {
               include: {

@@ -63,7 +63,7 @@ export default function RoadmapsContent({ roadmaps, currentPage, totalPages, sea
           Buscar
         </Button>
       </form>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-10">
         {roadmaps.map(roadmap => <RoadmapCard key={roadmap.id} roadmap={roadmap} />)}
       </div>
       <Pagination>

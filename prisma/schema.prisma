@@ -63,10 +63,10 @@ model Course {
   lessons       Int     @default(0)
   isActive      Boolean @default(false) @map("is_active")
 
-  userId     String @map("user_id")
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  categoryId String @map("category_id")
+  categoryId String   @map("category_id")
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   ratings      Rating[]
@@ -151,8 +151,8 @@ model Comment {
   id      String @id @default(cuid())
   content String @db.Text
 
-  userId   String @map("user_id")
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   lessonId String @map("lesson_id")
   lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
@@ -180,8 +180,8 @@ model Certificate {
 model Favorite {
   id String @id @default(cuid())
 
-  userId   String @map("user_id")
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   courseId String @map("course_id")
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -195,12 +195,13 @@ model Favorite {
 model Roadmap {
   id String @id @default(cuid())
 
-  title       String
-  description String
-  level       Level
-  duration    Float  @default(0)
+  title         String
+  description   String
+  level         Level
+  image         String
+  duration      Float   @default(0)
   averageRating Float   @default(0) @map("average_rating")
-  isActive    Boolean @default(false) @map("is_active")
+  isActive      Boolean @default(false) @map("is_active")
 
   courses RoadmapCourse[]
 
@@ -212,6 +213,7 @@ model Roadmap {
 
 model RoadmapCourse {
   id String @id @default(cuid())
+  step Int
 
   roadmapId String  @map("roadmap_id")
   roadmap   Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
@@ -219,6 +221,7 @@ model RoadmapCourse {
   courseId String @map("course_id")
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
+  @@unique([roadmapId, courseId, step])
   @@map("roadmap_courses")
 }
 

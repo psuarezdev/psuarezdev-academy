@@ -3,7 +3,7 @@ import { type RoadmapResponse } from '../page';
 
 export default function RoadmapCoursesList({ roadmap }: { roadmap: RoadmapResponse }) {
   return (
-    <div className="relative flex flex-col justify-center gap-6 bg-muted/65 p-5 overflow-y-hidden -z-30">
+    <div className="relative flex flex-col justify-center gap-6 bg-muted/65 p-5 overflow-y-hidden -z-10">
       {roadmap.courses.map(({ course }, index) => (
         <div
           key={`course-card-${course.id}`}

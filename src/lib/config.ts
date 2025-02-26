@@ -7,5 +7,6 @@ export enum UploadPaths {
   Avatars = 'avatars',
   CoursesImages = 'courses-images',
   CoursesVideos = 'courses-videos',
+  RoadmapsImages = 'roadmaps-images',
   Certificates = 'certificates'
 }

@@ -47,7 +47,7 @@ export default async function Roadmap({ params }: RoadmapProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="w-full flex flex-col lg:grid grid-cols-12 lg:space-x-5">
-        <section className="col-span-9">
+        <section className="col-span-9 relative z-20">
           <div className="w-full py-12 px-6 bg-gradient-to-tr from-muted via-muted to-red-800 dark:from-black dark:via-black/50 dark:to-red-800">
             <h1 className="text-3xl font-bold mb-8">
               Explora Nuestras Rutas de Aprendizaje
