@@ -24,10 +24,11 @@ interface CourseSelectorProps {
   onSelect: (course: Course | null) => void;
   defaultValue?: string;
   widthClass?: string;
+  showCheck?: boolean;
 }
 
 
-export default function CourseSelector({ courses, onSelect, defaultValue, widthClass }: CourseSelectorProps) {
+export default function CourseSelector({ courses, onSelect, defaultValue, widthClass, showCheck = true }: CourseSelectorProps) {
     const [value, setValue] = useState(defaultValue ?? '');
     const [open, setOpen] = useState(false);
   
@@ -63,12 +64,14 @@ export default function CourseSelector({ courses, onSelect, defaultValue, widthC
                   }}
                 >
                   {course.title}
-                  <Check
-                    className={cn(
-                      'ml-auto',
-                      value === course.id ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
+                  {showCheck && (
+                    <Check
+                      className={cn(
+                        'ml-auto',
+                        value === course.id ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>

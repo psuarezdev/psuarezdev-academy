@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ColumnDef,
@@ -40,6 +39,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import type { Roadmap, RoadmapCourse } from '@prisma/client';
 import { type RoadmapData } from '../page';
 import { formatDuration } from '@/lib/utils';
+import RoadmapModal from './roadmap-modal';
 
 export type RoadampWithRelations = Roadmap & {
   courses: (RoadmapCourse & {
@@ -60,6 +60,19 @@ export const columns: ColumnDef<RoadampWithRelations>[] = [
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue('title')}</div>,
+  },
+  {
+    accessorKey: 'courses',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Nº Cursos
+        <ArrowUpDown />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.original.courses.length}</div>,
   },
   {
     accessorKey: 'level',
@@ -103,15 +116,18 @@ export const columns: ColumnDef<RoadampWithRelations>[] = [
 ];
 
 interface RoadmapsManagerProps {
+  courses: Course[];
   roadmaps: RoadampWithRelations[];
   createRoadmap: (data: RoadmapData) => Promise<void>;
   updateRoadmap: (data: Partial<RoadmapData>) => Promise<void>;
   deleteRoadmap: (id: string) => Promise<void>;
 }
 
-export default function RoadmapsManager({ roadmaps, createRoadmap, updateRoadmap, deleteRoadmap }: RoadmapsManagerProps) {
+export default function RoadmapsManager({ roadmaps, courses, createRoadmap, updateRoadmap, deleteRoadmap }: RoadmapsManagerProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roadmapToUpdate, setRoadampToUpdate] = useState<RoadampWithRelations>();
   const [roadmapToDelete, setRoadmapToDelete] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -152,6 +168,22 @@ export default function RoadmapsManager({ roadmaps, createRoadmap, updateRoadmap
     }
   };
 
+  const handleModalSubmit = async (data: Partial<RoadmapData>) => {
+    try {
+      if (data.id) {
+        await updateRoadmap(data);
+      } else {
+        await createRoadmap(data as RoadmapData);
+      }
+    } catch(err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      throw new Error((err as any)?.message);
+    } finally {
+      setIsModalOpen(true);
+      setRoadampToUpdate(undefined);
+    }
+  };
+
 
   return (
     <div className="w-full">
@@ -162,7 +194,23 @@ export default function RoadmapsManager({ roadmaps, createRoadmap, updateRoadmap
           value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('title')?.setFilterValue(event.target.value)}
         />
-        {/* // TODO: Add roadmap modal */}
+        <Button onClick={() => {
+          setRoadampToUpdate(undefined);
+          setIsModalOpen(true);
+        }}>
+          Añadir nueva ruta
+        </Button>
+        {isModalOpen && (
+          <RoadmapModal
+            roadmap={roadmapToUpdate}
+            courses={courses}
+            onSubmit={handleModalSubmit}
+            onClose={() => {
+              setIsModalOpen(false);
+              setRoadampToUpdate(undefined);
+            }}
+          />
+        )}
       </div>
       <div className="rounded-md border">
         <Table>
@@ -216,10 +264,11 @@ export default function RoadmapsManager({ roadmaps, createRoadmap, updateRoadmap
                           Copiar ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/courses/${row.original.id}`}>
-                            Editar
-                          </Link>
+                        <DropdownMenuItem onClick={() => {
+                          setRoadampToUpdate(row.original);
+                          setIsModalOpen(true);
+                        }}>
+                          Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-500"

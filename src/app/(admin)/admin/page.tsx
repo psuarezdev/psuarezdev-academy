@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getAuth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import RatingStars from '@/components/rating-stars';
 
 export default async function Dashboard() {
   const auth = await getAuth();
@@ -44,7 +45,7 @@ export default async function Dashboard() {
     },
     {
       label: 'Valoración media',
-      content: averageRating,
+      component: () => <RatingStars averageRating={Number(averageRating)} showRating />,
       icon: Star
     }
   ];
@@ -58,7 +59,10 @@ export default async function Dashboard() {
             <item.icon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{item.content}</div>
+            <div className="text-2xl font-bold">
+              {item.content}
+              {item.component && <item.component />}
+            </div>
           </CardContent>
         </Card>
       ))}      

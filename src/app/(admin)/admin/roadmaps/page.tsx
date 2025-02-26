@@ -1,21 +1,30 @@
+import type { Course, Roadmap } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import RoadmapsManager from './_components/roadmaps-manager';
-import type { Course, Roadmap } from '@prisma/client';
 
 export type RoadmapData = Roadmap & {
-  courses: Course[];
+  courses: (Course & {
+    step: number;
+  })[];
 };
 
 export default async function Roadmaps() {
-  const roadmaps = await prisma.roadmap.findMany({
-    include: {
-      courses: {
-        include: {
-          course: true
+  const [roadmaps, courses] = await Promise.all([
+    await prisma.roadmap.findMany({
+      include: {
+        courses: {
+          include: {
+            course: true
+          }
         }
       }
-    }
-  });
+    }),
+    await prisma.course.findMany({
+      where: {
+        isActive: true
+      }
+    })
+  ]);
 
   const createRoadmap = async(data: RoadmapData) => {
     'use server';
@@ -25,6 +34,7 @@ export default async function Roadmaps() {
         ...data,
         courses: {
           create: data.courses.map(course => ({
+            step: course.step,
             course: { connect: { id: course.id } }
           }))
         }
@@ -73,7 +83,8 @@ export default async function Roadmaps() {
         ...roadmapFound.courses, 
         ...(data.courses ?? []).map(course => ({
           roadmapId: roadmapFound.id,
-          courseId: course.id
+          courseId: course.id,
+          step: course.step
         }))
       ]
     });
@@ -93,6 +104,7 @@ export default async function Roadmaps() {
     <div className="container mx-auto py-10">
       <RoadmapsManager
         roadmaps={roadmaps}
+        courses={courses}
         createRoadmap={createRoadmap}
         updateRoadmap={updateRoadmap}
         deleteRoadmap={deleteRoadmap}
