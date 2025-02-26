@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function RoadmapInstructorCard({ instructor }: { instructor: Omit<User, 'password'> }) {
   return (
-    <Link href={`/instructors/${instructor.id}`}>
+    <Link className="transition-opacity hover:opacity-80" href={`/instructors/${instructor.id}`}>
       <Card>
         <CardHeader className="p-3" />
         <CardContent>

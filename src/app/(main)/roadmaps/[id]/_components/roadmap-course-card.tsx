@@ -1,17 +1,25 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Certificate } from '@prisma/client';
 import { UploadPaths } from '@/lib/config';
 import { formatDuration, getUploadPath } from '@/lib/utils';
 import RatingStars from '@/components/rating-stars';
 import Description from '@/components/description';
+import { Award, BookOpen, Clock } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { type RoadampCourseResponse } from '../page';
-import { BookOpen, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
-export default function RoadmapCourseCard({ course }: { course: RoadampCourseResponse }) {
+interface RoadmapCourseCardProps {
+  course: RoadampCourseResponse;
+  certificate?: Certificate;
+}
+
+export default function RoadmapCourseCard({ course, certificate }: RoadmapCourseCardProps) {
   return (
     <Link
       href={`/courses/${course.id}`}
-      className="relative flex flex-col md:flex-row items-start gap-3 bg-muted rounded-md p-3 transition-opacity hover:opacity-90 w-full"
+      className="relative flex flex-col lg:flex-row items-start gap-3 bg-muted rounded-md p-3 transition-opacity hover:opacity-90 w-full"
     >
       <Image
         className="w-full md:w-[300] object-cover rounded-md"
@@ -21,9 +29,26 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
         height={300}
       />
       <div className="w-full p-2">
-        <h2 className="text-xl font-bold">
-          {course.title}
-        </h2>
+        <div className="flex items-center justify-between w-full mb-1">
+          <h2 className="text-xl font-bold">{course.title}</h2>
+          {!!certificate && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={`/certificates/${certificate.id}`}
+                    className="absolute -top-3 -right-3 bg-primary text-primary-foreground hover:bg-primary/90 p-2 rounded-full"
+                  >
+                    <Award className="w-4 h-4" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  Ir al certificado
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         <div className="text-muted-foreground [&_h2]:text-base mb-5">
           <div className="hidden md:block">
             <Description value={course.description.substring(0, 125)} />
@@ -32,13 +57,20 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
             <Description value={course.description} />
           </div>
         </div>
-        <RatingStars averageRating={course.averageRating} showRating />
-        <div className="flex items-center">
-          <span className="flex items-center text-muted-foreground text-sm mt-1.5">
+        <div className="flex flex-col lg:flex-row">
+          <RatingStars averageRating={course.averageRating} showRating />
+          {!!certificate && (
+            <Badge variant="success" className="w-fit mt-1.5 lg:mt-0 lg:ml-2">
+              Completado
+            </Badge>
+          )}
+        </div>
+        <div className="flex items-center text-muted-foreground text-sm mt-1.5">
+          <span className="flex items-center">
             <Clock className="w-5 h-5 mr-2" /> {formatDuration(course.duration)}
           </span>
           <span className="text-base text-muted-foreground mx-3">|</span>
-          <span className="flex items-center text-muted-foreground text-sm mt-1.5">
+          <span className="flex items-center">
             <BookOpen className="w-5 h-5 mr-2" />
             {course.lessons} lecciones
           </span>
