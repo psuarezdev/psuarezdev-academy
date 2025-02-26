@@ -28,33 +28,34 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         courses: {
           orderBy: { step: 'asc' },
           include: {
-            course: {
-              include: {
-                units: {
-                  include: {
-                    _count: true
-                  }
-                },
-                user: {
-                  omit: {
-                    password: true
-                  }
-                }
-              }
-            }
+            course: true
           }
         }
       }
     });
 
-    if(!roadmap) {
+    if (!roadmap) {
       return NextResponse.json(
         { message: 'No se ha encontrado la ruta' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(roadmap);
+    const instructors = await prisma.user.findMany({
+      where: {
+        role: 'instructor',
+        courses: {
+          some: {
+            id: {
+              in: roadmap.courses.map(c => c.courseId)
+            }
+          }
+        }
+      },
+      distinct: ['id']
+    });
+
+    return NextResponse.json({ ...roadmap, instructors });
   } catch {
     return NextResponse.json(
       { message: 'Error al obtener los detalles de la ruta' },

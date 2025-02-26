@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation';
-import type { Course, Roadmap, RoadmapCourse, Unit, User } from '@prisma/client';
+import type { Course, Roadmap, RoadmapCourse, User } from '@prisma/client';
 import { getAuth } from '@/lib/auth';
 import Description from '@/components/description';
 import { Separator } from '@/components/ui/separator';
 import RoadmapInstructorCard from './_components/roadmap-instructor-card';
 import RoadmapCoursesList from './_components/roadmap-courses-list';
+import prisma from '@/lib/prisma';
 
 interface RoadmapProps {
   params: { id: string; };
@@ -12,14 +13,10 @@ interface RoadmapProps {
 
 export type RoadampCourseResponse = Course & {
   user: Omit<User, 'password'>;
-  units: (Unit & {
-    _count: {
-      lessons: number;
-    }
-  })[];
 };
 
 export type RoadmapResponse = Roadmap & {
+  instructors:  Omit<User, 'password'>[];
   courses: (RoadmapCourse & {
     course: RoadampCourseResponse;
   })[];
@@ -28,11 +25,13 @@ export type RoadmapResponse = Roadmap & {
 export default async function Roadmap({ params }: RoadmapProps) {
   const auth = await getAuth();
 
+  if(!auth) return redirect('/');
+
   const res = await fetch(
     `${process.env.BASE_URL}/api/roadmaps/${params.id}`,
     {
       method: 'GET',
-      headers: { Authorization: auth ? `Bearer ${auth.accessToken}` : '' }
+      headers: { Authorization: `Bearer ${auth.accessToken}` }
     }
   );
 
@@ -40,9 +39,9 @@ export default async function Roadmap({ params }: RoadmapProps) {
 
   const roadmap = await res.json() as RoadmapResponse;
 
-  const instructors = roadmap.courses
-    .map(c => c.course.user)
-    .filter((user, index, self) => index === self.findIndex(u => u.id === user.id));
+  const certificates = await prisma.certificate.findMany({
+    where: { userId: auth.id }
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -54,7 +53,11 @@ export default async function Roadmap({ params }: RoadmapProps) {
             </h1>
             <Description value={roadmap.description} />
           </div>
-          <RoadmapCoursesList roadmap={roadmap} />            
+          <RoadmapCoursesList 
+            auth={auth}
+            courses={roadmap.courses} 
+            certificates={certificates}
+          />            
         </section>
         <section className="col-span-3 mt-10 lg:mt-0">
           <h2 className="text-xl font-bold mb-3">
@@ -62,7 +65,7 @@ export default async function Roadmap({ params }: RoadmapProps) {
           </h2>
           <Separator className="mb-4" />
           <div className="flex flex-col justify-center gap-3">
-            {instructors.map(instructor => (
+            {roadmap.instructors.map(instructor => (
               <RoadmapInstructorCard
                 key={`instructor-card-${instructor.id}`}
                 instructor={instructor}

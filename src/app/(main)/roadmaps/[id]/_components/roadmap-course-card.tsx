@@ -40,7 +40,7 @@ export default function RoadmapCourseCard({ course }: { course: RoadampCourseRes
           <span className="text-base text-muted-foreground mx-3">|</span>
           <span className="flex items-center text-muted-foreground text-sm mt-1.5">
             <BookOpen className="w-5 h-5 mr-2" />
-            {course.units.reduce((acc, unit) => acc + unit._count.lessons, 0)} lecciones
+            {course.lessons} lecciones
           </span>
         </div>
       </div>

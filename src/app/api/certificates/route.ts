@@ -17,7 +17,6 @@ type CertificateWithRelations = Certificate & {
   };
 };
 
-
 function generateCertificate(cwd: string, certificate: CertificateWithRelations): Promise<{ success: boolean }> {
   return new Promise((resolve, reject) => {
     const pythonCommand = os.platform() === 'win32' ? 'python' : 'python3';

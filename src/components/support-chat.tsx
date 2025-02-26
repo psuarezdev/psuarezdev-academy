@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { SUPPORT_EMAIL } from '@/lib/config';
 
 interface SupportChatProps {
   sendEmail: (content: string) => Promise<void>;
@@ -63,7 +64,13 @@ export default function SupportChat({ sendEmail, onClose }: SupportChatProps) {
             <span>Contactar con soporte</span>
           </DialogTitle>
           <DialogDescription>
-            Consulta todas tus dudas con nuestros agentes vía correo electrónico
+            <p>
+              Consulta todas tus dudas con nuestros agentes vía correo electrónico.
+              <br />
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-xs italic">
+                {SUPPORT_EMAIL}
+              </a>
+            </p>
           </DialogDescription>
         </DialogHeader>
           <form onSubmit={handleSubmit}>
