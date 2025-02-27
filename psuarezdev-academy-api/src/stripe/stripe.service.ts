@@ -6,6 +6,12 @@ import { CustomApiError } from '@/lib/errors';
 
 dotenv.config();
 
+export interface ProductDetail {
+  name: string;
+  description: string | null;
+  metadata: Stripe.Metadata;
+}
+
 export class StripeService {
   constructor(private readonly userService: UserService) { }
 

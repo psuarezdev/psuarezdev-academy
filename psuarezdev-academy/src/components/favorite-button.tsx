@@ -4,22 +4,28 @@ import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { HeaderAuth } from '@/app/(main)/_components/header';
 
 interface FavoriteButtonProps {
+  auth: HeaderAuth;
   courseId: string
   initialIsFavorite: boolean
 }
 
-export default function FavoriteButton({ courseId, initialIsFavorite }: FavoriteButtonProps) {
+export default function FavoriteButton({ auth, courseId, initialIsFavorite }: FavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
 
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
 
     try {
-      const res = await fetch(`/api/courses/${courseId}/favorites`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseId}/favorites`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json', 
+          Authorization: `Bearer ${auth?.accessToken}`
+        },
+        body: JSON.stringify({ courseId })
       });
 
       if (!res.ok) {

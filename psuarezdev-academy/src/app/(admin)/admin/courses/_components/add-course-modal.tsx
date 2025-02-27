@@ -111,7 +111,7 @@ export default function AddCourseModal({ authUser, users, categories, onSubmit }
         formData.set('file', data.image?.[0]);
         formData.set('dir', UploadPaths.CoursesImages);
 
-        const res = await fetch('/api/uploads', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploads`, {
           method: 'POST',
           body: formData
         });

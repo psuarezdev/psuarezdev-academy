@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import jsonwebtoken from 'jsonwebtoken';
 import { UserDTO } from '@/user/dto/user.dto';
 import { UserService } from '@/user/user.service';
+import { CustomApiError } from '@/lib/errors';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ export class JwtService {
 
   generateToken(payload: UserDTO, expiresIn: string | number = '1h') {
     try {
-      if (!JWT_SECRET) throw new Error('JWT secret is not defined')
+      if (!JWT_SECRET) throw new CustomApiError(400, 'JWT secret is not defined')
       const { id: sub, email } = payload;
       return jsonwebtoken.sign({ sub, email }, JWT_SECRET, { expiresIn });
     } catch {
@@ -29,7 +30,7 @@ export class JwtService {
 
   async verifyToken(token: string) {
     try {
-      if (!JWT_SECRET) throw new Error('JWT secret is not defined');
+      if (!JWT_SECRET) throw new CustomApiError(500, 'JWT secret is not defined');
       const payload = jsonwebtoken.verify(token, JWT_SECRET) as unknown as Payload;
       return await this.userService.findById(payload.sub);
     } catch {

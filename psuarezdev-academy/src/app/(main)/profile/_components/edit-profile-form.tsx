@@ -99,7 +99,7 @@ export default function EditProfileForm({ authUser }: EditProfileFormProps) {
 
       formData.delete('image');
 
-      const updateRes = await fetch('/api/auth/profile', {
+      const updateRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
         method: 'PATCH',
         body: formData
       });

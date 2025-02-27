@@ -14,7 +14,7 @@ export default function SubscribeButton({ children, priceId, accessToken }: Subs
   
   const handleSubscribe = async() => {
     try {
-      const res = await fetch('/api/stripe/checkout', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/checkout`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,

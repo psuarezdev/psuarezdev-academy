@@ -91,7 +91,7 @@ export default function AddLessontModal({ lesson, onClose, onSubmit }: AddLesson
         formData.set('file', data.video?.[0]);
         formData.set('dir', UploadPaths.CoursesVideos);
 
-        const res = await fetch('/api/uploads', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploads`, {
           method: 'POST',
           body: formData
         });

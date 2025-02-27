@@ -48,7 +48,7 @@ export default async function Lesson({ params }: LessonProps) {
   }
 
   const res = await fetch(
-    `${process.env.BASE_URL}/api/courses/${params.courseId}/lessons/${params.lessonId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/courses/${params.courseId}/lessons/${params.lessonId}`,
     {
       method: 'GET',
       headers: { Authorization: `Bearer ${auth.accessToken}` }

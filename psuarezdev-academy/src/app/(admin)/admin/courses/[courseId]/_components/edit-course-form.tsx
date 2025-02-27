@@ -108,7 +108,7 @@ export default function EditCourseForm({ authUser, course, categories, users, ed
         formData.set('file', data.image?.[0]);
         formData.set('dir', UploadPaths.CoursesImages);
 
-        const res = await fetch('/api/uploads', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploads`, {
           method: 'POST',
           body: formData
         });

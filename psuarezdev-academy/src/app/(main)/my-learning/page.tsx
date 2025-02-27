@@ -23,7 +23,7 @@ export default async function MyLearning() {
 
   if (!auth) return redirect('/');
 
-  const coursesRes = await fetch(`${process.env.BASE_URL}/api/my-learning`, {
+  const coursesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-learning`, {
     method: 'GET',
     headers: { Authorization: `Bearer ${auth.accessToken}` }
   });

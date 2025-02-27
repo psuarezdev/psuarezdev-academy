@@ -31,7 +31,7 @@ export default async function Roadmaps({ searchParams }: RoadmapsProps) {
   ) return notFound();
 
   const queryString = qs.stringify(searchParams, { addQueryPrefix: true });
-  const res = await fetch(`${process.env.BASE_URL}/api/roadmaps${queryString}`,
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmaps${queryString}`,
     {
       method: 'GET',
       headers: { Authorization: `Bearer ${auth.accessToken}` }

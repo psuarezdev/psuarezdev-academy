@@ -1,6 +1,7 @@
 import type { Request, NextFunction } from 'express';
 import { UserDTO } from '@/user/dto/user.dto';
 import { container } from '@/app';
+import { CustomApiError } from '@/lib/errors';
 
 export interface AuthenticatedRequest extends Request {
   user?: UserDTO;
@@ -12,9 +13,9 @@ const excludedPaths = [
   '/api/stripe/subscriptions'
 ];
 
-export const authenticate = async(req: any, res: any, next: NextFunction) => {
+export const authenticate = async (req: any, res: any, next: NextFunction) => {
   try {
-    if(excludedPaths.includes(req.originalUrl)) return next();
+    if (excludedPaths.includes(req.originalUrl)) return next();
 
     const { authorization } = req.headers;
 
@@ -30,7 +31,7 @@ export const authenticate = async(req: any, res: any, next: NextFunction) => {
 
     const jwtService = container.resolve('jwtService');
 
-    if(!jwtService) throw new Error('Dependency injection error');
+    if (!jwtService) throw new Error('Dependency injection error');
 
     const user = await jwtService.verifyToken(token);
 
@@ -40,7 +41,16 @@ export const authenticate = async(req: any, res: any, next: NextFunction) => {
 
     req.user = user;
     return next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Something went wrong, please try again.' });
+  } catch (err) {
+    if (err instanceof CustomApiError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+        errors: err.errors
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Something went wrong, please try again.'
+    });
   }
 };

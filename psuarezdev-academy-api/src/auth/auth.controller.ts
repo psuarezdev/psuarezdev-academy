@@ -47,16 +47,13 @@ export class AuthController extends BaseController {
       const { dto: registerDto, errors } = await this.utilsService.mapToDto(req.body, RegisterDTO);
 
       if (Object.keys(errors).length > 0) {
-        return res.status(400).json({
-          message: 'Validation failed',
-          errors
-        });
+        throw new CustomApiError(400, 'Validation failed', errors);
       }
 
       const data = await this.authService.register(registerDto);
 
       if (!data) {
-        return res.status(403).json({ message: 'Wrong credentials' });
+        throw new CustomApiError(403, 'Wrong credentials');
       }
 
       return res.status(201).json(data);

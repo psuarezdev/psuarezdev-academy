@@ -2,15 +2,15 @@ import { cookies, headers } from 'next/headers';
 import type { User } from '@prisma/client';
 import Stripe from 'stripe';
 
-export type ProductDetail = {
+export interface ProductDetail {
   name: string;
   description: string | null;
   metadata: Stripe.Metadata;
-};
+}
 
 export async function login(email: string, password: string) {
   try {
-    const res = await fetch(`${process.env.API_URL}/auth/login`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -30,7 +30,7 @@ export async function login(email: string, password: string) {
 
 export async function register(firstName: string, lastName: string, email: string, password: string) {
   try {
-    const res = await fetch(`${process.env.API_URL}/auth/register`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ firstName, lastName, email, password })
@@ -64,7 +64,7 @@ export async function getAuth() {
       ? authorizationHeader.substring(7)
       : null;
 
-    const res = await fetch(`${process.env.API_URL}/auth/profile`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken || tokenFromHeader}`

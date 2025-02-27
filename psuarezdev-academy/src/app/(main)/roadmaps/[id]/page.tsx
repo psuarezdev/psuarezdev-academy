@@ -28,7 +28,7 @@ export default async function Roadmap({ params }: RoadmapProps) {
   if(!auth) return redirect('/');
 
   const res = await fetch(
-    `${process.env.BASE_URL}/api/roadmaps/${params.id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/roadmaps/${params.id}`,
     {
       method: 'GET',
       headers: { Authorization: `Bearer ${auth.accessToken}` }

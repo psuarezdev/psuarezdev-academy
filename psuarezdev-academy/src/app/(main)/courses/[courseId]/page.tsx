@@ -32,7 +32,7 @@ export default async function Course({ params }: CourseProps) {
   const auth = await getAuth();
 
   const res = await fetch(
-    `${process.env.BASE_URL}/api/courses/${params.courseId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/courses/${params.courseId}`,
     {
       method: 'GET',
       headers: { Authorization: auth ? `Bearer ${auth.accessToken}` : '' }
@@ -98,6 +98,7 @@ export default async function Course({ params }: CourseProps) {
                 </Button>
                 {auth && (
                   <FavoriteButton
+                    auth={auth}
                     courseId={course.id}
                     initialIsFavorite={course.isFavorite ?? false}
                   />

@@ -22,7 +22,7 @@ export interface CoursesResponse {
 
 export default async function Courses({ searchParams }: CoursesProps) {
   const queryString = qs.stringify(searchParams, { addQueryPrefix: true });
-  const res = await fetch(`${process.env.BASE_URL}/api/courses${queryString}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses${queryString}`);
 
   if (!res.ok) return redirect('/');
 

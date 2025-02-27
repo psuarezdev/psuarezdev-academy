@@ -1,5 +1,8 @@
+import { ProductDetail } from '@/stripe/stripe.service';
+import { Role } from '@prisma/client';
 import { Expose, Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, Length } from 'class-validator';
+import Stripe from 'stripe';
 
 export class UserDTO {
   @Expose()
@@ -22,6 +25,15 @@ export class UserDTO {
   @Expose()
   @IsEmail({}, { message: 'Email must be valid' })
   email!: string;
+
+  @Expose()
+  @IsEnum(Role, { message: `Role must be one of this options: ${Object.values(Role).join(', ')}` })
+  role!: Role;
+
+  @Expose()
+  subscription!: Stripe.Response<Stripe.Subscription> & {
+    productDetails: ProductDetail | null;
+  } | null;
 
   @Expose()
   avatar!: string;

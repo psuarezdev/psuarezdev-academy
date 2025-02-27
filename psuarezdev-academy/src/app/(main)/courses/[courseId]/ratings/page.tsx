@@ -19,7 +19,7 @@ interface RatingsProps {
 }
 
 export default async function Ratings({ params }: RatingsProps) {
-  const res = await fetch(`${process.env.BASE_URL}/api/courses/${params.courseId}/ratings`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${params.courseId}/ratings`);
 
   if (!res.ok) return redirect(`/courses/${params.courseId}`);
 

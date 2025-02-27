@@ -98,7 +98,7 @@ export function UserModal({ user, onClose, onSubmit }: UserModalProps) {
         formData.set('file', data.avatar?.[0]);
         formData.set('dir', UploadPaths.Avatars);
 
-        const res = await fetch('/api/uploads', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploads`, {
           method: 'POST',
           body: formData
         });

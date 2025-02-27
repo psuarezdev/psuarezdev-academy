@@ -27,7 +27,7 @@ export default function CertificateButton({ courseId, certificate, totalComplete
     }
 
     try {
-      const res = await fetch('/api/certificates', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/certificates`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ courseId })

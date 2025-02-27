@@ -30,7 +30,7 @@ export default function SubscriptionManager({ subscription }: SubscriptionManage
   const handleClick = async () => {
     setIsLoading(true);
     try {
-      await fetch('/api/stripe/subscriptions', { method: 'PUT' });
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/subscriptions`, { method: 'PUT' });
       router.refresh();
     } catch {
       toast({

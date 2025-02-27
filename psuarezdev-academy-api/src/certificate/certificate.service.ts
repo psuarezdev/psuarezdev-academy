@@ -7,7 +7,7 @@ import { UserDTO } from '@/user/dto/user.dto';
 import { rename } from 'node:fs/promises';
 import { UploadPaths } from '@/lib/config';
 import { CustomApiError } from '@/lib/errors';
-import { UploadService } from '@/shared/upload.service';
+import { UploadService } from '@/upload/upload.service';
 
 type CertificateWithRelations = Certificate & {
   totalDuration: number;

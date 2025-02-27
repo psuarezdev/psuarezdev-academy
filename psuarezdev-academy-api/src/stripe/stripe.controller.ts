@@ -3,6 +3,7 @@ import { GET, POST, PUT, route } from 'awilix-express';
 import { StripeService } from './stripe.service';
 import { AuthenticatedRequest } from '@/middlewares/auth';
 import { BaseController } from '@/shared/base.controller';
+import { CustomApiError } from '@/lib/errors';
 
 @route('/api/stripe')
 export class StripeController extends BaseController {
@@ -41,9 +42,7 @@ export class StripeController extends BaseController {
       const isCancelled = await this.stripeService.updateSuscription(req.user);
 
       if (isCancelled === null) {
-        return res.status(500).json({
-          message: 'Error while trying to update subscription'
-        });
+        throw new CustomApiError(500, 'Error while trying to update subscription');
       }
 
       return res.status(200).json({
@@ -63,25 +62,19 @@ export class StripeController extends BaseController {
       if (!req.user) return this.unathorized(res);
 
       if (!priceId) {
-        return res.status(400).json(
-          { message: 'El Id de la suscription es obligatorio' }
-        );
+        throw new CustomApiError(400, 'Subscription Id is required');
       }
 
       const subscriptions = await this.stripeService.getSubscriptions();
 
       if (!subscriptions || subscriptions.length === 0 || !(subscriptions?.some(sub => sub.id === priceId))) {
-        return res.status(400).json(
-          { message: 'El Id no es valido' }
-        );
+        throw new CustomApiError(400, 'Subscription is not valid');
       }
 
       const session = await this.stripeService.checkout(priceId, req.user);
 
       if (!session) {
-        return res.status(500).json(
-          { message: 'Error el crear la sessión del pago' }
-        );
+        throw new CustomApiError(500, 'Error creating checkout session');
       }
 
       return res.status(201).json({ url: session.url });
@@ -97,9 +90,7 @@ export class StripeController extends BaseController {
       const signature = req.headers['Stripe-Signature'] as string | null;
 
       if (!signature) {
-        return res.status(400).json(
-          { message: 'Falta el Stripe Signature' }
-        );
+        throw new CustomApiError(400, 'Stripe Signature is missing');
       }
 
       await this.stripeService.webhooks(req.body, signature);

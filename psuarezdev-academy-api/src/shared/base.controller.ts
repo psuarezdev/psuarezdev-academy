@@ -1,6 +1,5 @@
 import type { Response } from 'express';
 import { CustomApiError } from '@/lib/errors';
-import { UserDTO } from '@/user/dto/user.dto';
 
 export class BaseController {
   protected handleError(res: Response, err: unknown) {
@@ -16,9 +15,9 @@ export class BaseController {
     });
   }
 
-  protected unathorized(res: Response) {
+  protected unathorized(res: Response, message?: string) {
     return res.status(401).json({
-      message: 'Unathorized'
+      message: message ?? 'Unathorized'
     });
   }
 }

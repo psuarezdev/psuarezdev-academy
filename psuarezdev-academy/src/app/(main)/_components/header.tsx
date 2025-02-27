@@ -8,6 +8,7 @@ import MobileNav from './mobile-nav';
 import DesktopNav from './desktop-nav';
 
 export type HeaderAuth = Omit<User & {
+  accessToken?: string;
   subscription: Stripe.Response<Stripe.Subscription> | null;
 }, 'password'> | null;
 
