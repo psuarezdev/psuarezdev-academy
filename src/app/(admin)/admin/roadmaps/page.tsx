@@ -1,6 +1,8 @@
 import type { Course, Roadmap } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import RoadmapsManager from './_components/roadmaps-manager';
+import { removeFile } from '@/lib/upload';
+import { UploadPaths } from '@/lib/config';
 
 export type RoadmapData = Roadmap & {
   courses: (Course & {
@@ -58,6 +60,10 @@ export default async function Roadmaps() {
       throw new Error(`No existe la ruta con id: ${data.id}`);
     }
 
+    if(roadmapFound.image !== data.image) {
+      await removeFile(UploadPaths.RoadmapsImages, roadmapFound.image);
+    }
+
     await prisma.roadmap.update({
       where: {
         id: roadmapFound.id
@@ -92,11 +98,21 @@ export default async function Roadmaps() {
   const deleteRoadmap = async(id: string) => {
     'use server';
 
+    const roadmap = await prisma.roadmap.findUnique({ where: { id } });
+
+    if(!roadmap) {
+      throw new Error(`No existe la ruta con id: ${id}`);
+    }
+
     await prisma.roadmapCourse.deleteMany({
-      where: { roadmapId: id }
+      where: { roadmapId: roadmap.id }
     });
 
-    await prisma.roadmap.deleteMany({ where: { id } });
+    await prisma.roadmap.deleteMany({ 
+      where: { id: roadmap.id } 
+    });
+
+    await removeFile(UploadPaths.RoadmapsImages, roadmap.image);
   };
 
   return (
