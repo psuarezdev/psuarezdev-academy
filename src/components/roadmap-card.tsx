@@ -32,7 +32,7 @@ export default function RoadmapCard({ roadmap, className }: RoadmapCardProps) {
       <CardContent>
         <div>
           <Description value={`${roadmap.description.substring(0, 275).trim()}...`} />
-          <div className="flex flex-col xl:flex-row xl:items-center gap-5 text-muted-foreground mt-5 mb-3">
+          <div className="flex flex-col 2xl:flex-row 2xl:items-center gap-3 2xl:gap-5 text-muted-foreground mt-5 mb-3">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               <p className="text-sm">{roadmap.courses.length} Cursos</p>

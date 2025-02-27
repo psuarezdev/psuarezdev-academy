@@ -74,8 +74,8 @@ type RoadmapFormData = z.infer<typeof roadmapSchema>;
 export default function RoadmapModal({ roadmap, courses, onClose, onSubmit }: RoadmapModal) {
   const { toast } = useToast();
   const router = useRouter();
-  const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
-  const [editorValue, setEditorValue] = useState<string | undefined>(undefined);
+  const [selectedCourses, setSelectedCourses] = useState<Course[]>((roadmap?.courses ?? []).map(c => c.course));
+  const [editorValue, setEditorValue] = useState<string | undefined>(roadmap?.description);
   const [imagePreview, setImagePreview] = useState<string | null>(
     roadmap?.image ? getUploadPath(UploadPaths.RoadmapsImages, roadmap?.image) : null
   );
@@ -107,7 +107,7 @@ export default function RoadmapModal({ roadmap, courses, onClose, onSubmit }: Ro
 
   const handleSubmit = async (data: RoadmapFormData) => {
     try {
-      if(!roadmap?.image || !data.image) {
+      if(!roadmap?.image && !data.image) {
         return toast({
           title: 'Error',
           description: 'La imagen de la ruta es oblgatoría',
@@ -115,7 +115,7 @@ export default function RoadmapModal({ roadmap, courses, onClose, onSubmit }: Ro
         });
       }
 
-      let image: string | undefined = undefined;
+      let image: string | undefined = roadmap?.image;
 
       if (data.image) {
         const formData = new FormData();
@@ -139,6 +139,20 @@ export default function RoadmapModal({ roadmap, courses, onClose, onSubmit }: Ro
       if (!image) {
         throw new Error('La imagen es obligatoria para crear el curso');
       }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { courseIds, ...rest } = data;
+
+      await onSubmit({
+        ...rest,
+        image,
+        isActive: data.isActive === 'true',
+        duration: selectedCourses.reduce((acc, item) => acc + item.duration, 0),
+        courses: selectedCourses.map((course, index) => ({
+          ...course,
+          step: index + 1
+        }))
+      });
 
       setImagePreview(null);
       setEditorValue(undefined);

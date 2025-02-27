@@ -60,7 +60,7 @@ export default async function Roadmaps() {
 
     await prisma.roadmap.update({
       where: {
-        id: data.id
+        id: roadmapFound.id
       },
       data: {
         title: data.title ?? roadmapFound.title,
@@ -74,13 +74,12 @@ export default async function Roadmaps() {
 
     await prisma.roadmapCourse.deleteMany({
       where: {
-        roadmapId: roadmapFound.id
+        roadmapId: roadmapFound.id,
       }
     });
 
     await prisma.roadmapCourse.createMany({
       data: [
-        ...roadmapFound.courses, 
         ...(data.courses ?? []).map(course => ({
           roadmapId: roadmapFound.id,
           courseId: course.id,

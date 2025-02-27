@@ -29,22 +29,22 @@ export default async function Dashboard() {
 
   const items = [
     {
-      label: 'Usuarios totales',
+      label: 'Usuarios totales (Rol user)',
       content: totalUsers,
       icon: Users
     },
     {
-      label: 'Cursos totales',
+      label: 'Cursos totales (Activas)',
       content: totalCourses,
       icon: BookOpen
     },
     {
-      label: 'Rutas totales',
+      label: 'Rutas totales (Activas)',
       content: totalRoadmaps,
       icon: Waypoints
     },
     {
-      label: 'Valoración media',
+      label: 'Valoración media (Todos los cursos)',
       component: () => <RatingStars averageRating={Number(averageRating)} showRating />,
       icon: Star
     }
