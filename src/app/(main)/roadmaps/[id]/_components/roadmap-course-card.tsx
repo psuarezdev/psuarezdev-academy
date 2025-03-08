@@ -41,6 +41,7 @@ export default function RoadmapCourseCard({ course, certificate }: RoadmapCourse
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
+                    onClick={(e) => e.stopPropagation()}
                     href={`/certificates/${certificate.id}`}
                     className="absolute -top-3 -right-3 bg-primary text-primary-foreground hover:bg-primary/90 p-2 rounded-full"
                   >
