@@ -34,7 +34,7 @@ const userSchema = z.object({
   lastName: z.string().min(3, 'El apellido debe tener al menos 3 caracteres'),
   email: z.string().email('Dirección de correo electrónico no válida'),
   password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres').optional(),
-  role: z.enum(['user', 'instructor', 'admin', 'support']),
+  role: z.enum(['user', 'instructor', 'admin']),
   title: z.string().optional(),
   github: z.string().url('URL no válida').optional().or(z.literal('')),
   website: z.string().url('URL no válida').optional().or(z.literal('')),

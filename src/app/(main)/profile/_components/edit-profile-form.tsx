@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { type User } from '@prisma/client';
+import { Role, type User } from '@prisma/client';
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE, UploadPaths } from '@/lib/config';
 import { Button } from '@/components/ui/button';
 import {
@@ -66,7 +66,7 @@ export default function EditProfileForm({ authUser }: EditProfileFormProps) {
       lastName: authUser?.lastName ?? undefined,
       password: authUser ? undefined : '',
       email: authUser?.email ?? '',
-      role: authUser?.role ?? 'user',
+      role: authUser?.role ?? Role.user,
       title: authUser?.title ?? '',
       github: authUser?.github ?? '',
       website: authUser?.website ?? '',

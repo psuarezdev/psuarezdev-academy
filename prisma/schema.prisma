@@ -234,6 +234,5 @@ enum Level {
 enum Role {
   user
   instructor
-  support
   admin
 }
