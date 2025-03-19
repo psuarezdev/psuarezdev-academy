@@ -1,6 +1,6 @@
 'use client';
 
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default function Description({ value }: { value: string }) {
   const sanitizedHTML = DOMPurify.sanitize(value.replaceAll('"', '').replaceAll('\\', ''));

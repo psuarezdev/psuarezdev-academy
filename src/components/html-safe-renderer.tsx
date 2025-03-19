@@ -1,6 +1,6 @@
 'use client';
 
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default function HtmlSafeRenderer({ html }: { html: string; }) {
   const sanitizedHTML = DOMPurify.sanitize(html);
