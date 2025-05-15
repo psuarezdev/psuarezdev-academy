@@ -36,11 +36,12 @@ npm i -E
 
 ```js
 NODE_ENV=development  
-BASE_URL="http://localhost:3000"  
+BASE_URL="http://localhost:3000"
 DATABASE_URL="postgresql://<user>:<password>@localhost:5432/<db_name>?schema=public"  
 JWT_SECRET=your_jwt_secret  
 STRIPE_SECRET_KEY=your_stripe_secret_key  
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret  
+RESEND_API_KEY=your_resend_api_key
 ```
 
 ### Setup Prisma
