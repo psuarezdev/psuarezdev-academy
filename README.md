@@ -58,5 +58,5 @@ npm run dev
 
 ## Aclaración de autoría
 
-> Este proyecto ha sido desarrollado íntegramente por mí, sin intervención ni aportación alguna por parte de ninguna profesora llamada Noelia. Todos los conocimientos aplicados en el desarrollo del mismo ya los poseía previamente, y no han sido adquiridos ni guiados por su parte en ninguna fase del proyecto.
+> Este proyecto ha sido desarrollado íntegramente por mí, sin intervención ni aportación alguna por parte de ninguna profesor/a. Todos los conocimientos aplicados en el desarrollo del mismo ya los poseía previamente, y no han sido adquiridos ni guiados por su parte en ninguna fase del proyecto.
 
